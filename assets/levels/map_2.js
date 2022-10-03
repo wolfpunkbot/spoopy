@@ -1,64 +1,44 @@
 
 //LEVEL 2 GAME DATA
 if (level == 2) {
+	
 	console.log('Loading Map ' + level);
+	
 	//SET LEVEL SPECIFIC VARIABLES
-	totalItems = 1;
-	startingSquare = 98;
+	totalItems = 13;
+	startingSquare = 178;
 	helpMsg = 'Did you know that you died in a past life?';
-	masterDoorNum = '53';
-	endPortal = '23';
-	helpBlockLoc = '113';
+	masterDoorNum = 204;
+	endPortal = 205;
+	helpBlockLoc = '193';
 	
 	//SET LEVEL SPECIFIC BLOCKS
 	levelBoundaryBlocks = [
-		'52', '37', '22', 
-		'24', '39', '54', '55', '57', '58', '59',
-		'79', '94', '109', '124', '139', '169'
+		'206', '191', '176', '161', '146', '131', '116', '101', '86', 
+		'71', '56', '26', '183', '185', '155', '156', '79', '115', 
+		'153', '154', '125', '126', '124', '123', '95', '94', '93', '109', 
+		'64', '63', '36', '51', '65', '66', '96', '186', '168', '139', '198'
 	];
 	
-	//CREATE BOUNDARIES FOR LEVEL
+	//KEY LOCATIONS [COLOR, SQ]
+	levelKeys = ['green:29','green:80', 'red:78', 'red:17', 'yellow:197', 'yellow:108', 'blue:138', 'blue:170'];
+	
+	//BONE LOCATIONS
+	levelBones = ['207', '209', '110', '130', '140'];
+	
+	//ALL BOUNDARY BLOCK LOCATIONS
 	boardBoundaryBlocks = $.merge( $.merge($.merge( $.merge( levelBoundaryBlocks, board_TOP ), board_BOTTOM ), board_LEFT), board_RIGHT);
-	$.each(boardBoundaryBlocks, function(i, val) {
-		$('[data-sq="' + val + '"]').addClass('stopBlock');
-	});
 	
-	//CREATE KEYS
-	levelKeys = ['yellow:77','yellow:89','blue:95','blue:125','red:101','red:131','green:202','green:204'];
-	$.each(levelKeys, function(i, val) {
-		$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + val.split(':')[0] + '" data-keyColor="' + val.split(':')[0] + '" data-keyNum="' + val.split(':')[1] + '" data-isCollected="false"></i>');
-	});
+	//DOOR LOCATIONS (COLORED DOOR, GHOST DOOR, AND END PORTAL [COLOR, SQ]
+	interactable = ['yellow:122','yellow:171','blue:141','blue:152','red:111','red:92','green:21','green:62', 'master:' + masterDoorNum, 'endPortal:' + endPortal];
 	
-	//CREATE BONES
-	levelBones = ['18','28','137','149', '158'];
-	$.each(levelBones, function(i, val) {
-		$('[data-sq="' + val + '"]').html('<i class="fas fa-bone faKey" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
-	});
+	//WATER LOCATIONS
+	levelWater = ['87', '88', '89', '102', '103', '104'];
 	
-	//CREATE ALL DOORS (INCLUDING FINAL DOOR)
-	interactable = ['yellow:170','yellow:176','blue:64','blue:162','red:72','red:154','green:50','green:56', 'master:' + masterDoorNum, 'endPortal:' + endPortal];
+	//PUSH BLOCK LOCATIONS
+	levelPushBlocks = ['133', '148'];
 	
-	//SET LOCK ICON FOR ALL DOORS EXCEPT FINAL DOOR
-	var icon = 'fad fa-lock';
-	$.each(interactable, function(i, val) {
-		if (val.split(':')[0] == 'endPortal') {
-			//console.log('endPortal');
-			icon = 'fas fa-jack-o-lantern';
-			$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '" />');
-		} else {
-			//console.log('Other Doors');
-			//SET ICON FOR MASTER DOOR AKA FINAL DOOR TO OPEN
-			if (val.split(':')[0] == 'master') {
-				icon = 'fas fa-ghost';
-			}
-			//SET CODE FOR ALL LOCKED DOORS
-			$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="interactable ' + icon + ' Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '"></i>');
-		}
-	});
+	//SPOTLIGHT LOCATIONS - IN ORDER OF LIGHTING SEQUENCE
+	levelSpotlights = ['190', '189', '188', '187'];
 	
-	//HELP ICON IN CENTER OF BOARD
-	$('[data-sq="' + helpBlockLoc + '"]').append('<i class="fas fa-question-square"></i>');
-	
-	//SEND PLAYER TO START POSITION
-	$('[data-sq="' + startingSquare + '"]').append('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/player.gif" />');
 }
