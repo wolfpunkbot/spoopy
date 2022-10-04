@@ -1812,7 +1812,6 @@ button {
 /* ########################################## */
 /* ########################################## */
 #joyStick {
-	display: block;
     height: 45vh;
 	width: 100%;
     border: 1px solid blue;
@@ -1820,6 +1819,12 @@ button {
 	text-align: center;
 	justify-content: center;
 	align-items: center;
+	position: fixed;
+	background-color: #69746b;
+	border: 1px solid #69746b;
+	top: 0;
+	left: 50%;
+	transform: translate(-50%, 0)!important;
 	:hover {
 		background-color: pink;
 	}
