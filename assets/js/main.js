@@ -2,7 +2,7 @@
 // ##################################################################################
 // ##################################################################################
 
-var devDebug = false;
+var devDebug = true;
 //https://www.youtube.com/watch?v=9RIi9FvDhQA&ab_channel=Thegamerwalkthroughs
 
 // ##################################################################################
@@ -379,9 +379,9 @@ function triggerBeams() {
 						} else if (x == count-1) {
 							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamEnd').attr('hasBeam', 'true');
 						} else {
-							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamMiddle').attr('hasBeam', 'true');
-							if ( $('#player').attr('data-pos') == val[x] ) {
-								//DETECT IF STATIONARY PLAYER IS CAUGHT IN BEAM
+							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').attr('hasBeam', 'true');
+							//DETECT IF STATIONARY PLAYER IS CAUGHT IN ACTIVE BEAM
+							if ($('[data-sq="' + $('#player').attr('data-pos') + '"]').attr('hasBeam') == 'true') {
 								playerInBeam();
 							}
 						}
@@ -408,7 +408,7 @@ function triggerBeams() {
 						} else if (x == count-1) {
 							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamEnd').attr('hasBeam', 'false');
 						} else {
-							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamMiddle').attr('hasBeam', 'false');
+							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').attr('hasBeam', 'false');
 						}
 					}
 				}
