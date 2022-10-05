@@ -6,8 +6,8 @@ if (level == 2) {
 	//SET LEVEL SPECIFIC VARIABLES
 	totalItems = 13; //13
 	helpMsg = 'Don\'t be a bonehead. Pick up your bones!';
-	masterDoorNum = 1;
-	endPortal = 1;
+	masterDoorNum = 1321;
+	endPortal = 1322;
 	helpBlockLoc = 1275;
 	playerTexture = 'jackolantern_head'; //default | jackolantern_head
 	
@@ -24,8 +24,7 @@ if (level == 2) {
 		'1073', '1123', '1173', '1223', '1273', '1323', '1022', '768', '818', 
 		'868', '867', '866', '865', '916', '965', '966', '967', '968', 
 		'1068', '1168', '1268', '1267', '1215', '1265', '1315', '1167', 
-		'1166', '1165', '1116', '1066', '1065', '1067', '1016', '1227', '', 
-		//1375
+		'1166', '1165', '1116', '1066', '1065', '1067', '1016', '1227', '1375', 
 	];
 	
 	//KEY LOCATIONS [COLOR, SQ]

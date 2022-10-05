@@ -2,7 +2,7 @@
 // ##################################################################################
 // ##################################################################################
 
-var devDebug = true;
+var devDebug = false;
 //https://www.youtube.com/watch?v=9RIi9FvDhQA&ab_channel=Thegamerwalkthroughs
 
 // ##################################################################################
@@ -22,7 +22,7 @@ var userMobile = false;
 var level, levelKeys, flip, direction, num, totalItems, helpMsg, endPortal, helpBlockLoc, masterDoorNum, playerTexture, globalMarginTop, globalMarginLeft = '';
 const startingSquare = 1225;
 const marginLeft = '38px';
-const marginTop = '-1025px';
+const marginTop = '-1837px';
 
 /*
 //ALL SIDE NUMBERS OF THE BOARD
@@ -338,7 +338,7 @@ function playerInLava() {
 //RESET PLAYER AFTER BEING CAUGHT IN LIGHT BEAM
 function playerInBeam() {
 	canMove = false;
-	$('#gameBoard').addClass('caughtEffect');
+	$('.gameContainer').addClass('caughtEffect');
 	//PLAY ELECTRIC SHOCK AUDIO WHEN CAUGHT IN BEAM
 	var audioElement = document.createElement('audio');
 	audioElement.setAttribute('src', 'assets/audio/beamShockSound.mp3');
@@ -353,7 +353,7 @@ function playerInBeam() {
 		$('.gameContainer').css('margin-top', marginTop).css('margin-left', marginLeft);
 		caughtInBeam = false;
 		canMove = true;
-		$('#gameBoard').removeClass('caughtEffect');
+		$('.gameContainer').removeClass('caughtEffect');
 	}, 1500);
 }
 
