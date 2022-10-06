@@ -15,7 +15,8 @@ TO DO:
 -->
 
 <?php
-	$siteURL = 'http://192.168.1.8/projects/SPOOPY/';
+	$siteURL = 'http://192.168.1.8/projects/games/SPOOPY/';
+	$builder = $_GET['builder'];
 ?>
 
 <!DOCTYPE html>
@@ -60,6 +61,13 @@ TO DO:
 		<script type="text/javascript"src="assets/fa/da7246007f.js"></script>
 		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 		<script type="text/javascript" src="assets/js/main.js"></script>
+		
+		<?php
+			if ($builder == true) {
+				echo '<script>console.log("loading builder.js");</script>';
+				echo '<script type="text/javascript" src="assets/js/builder.js"></script>';
+			}
+		?>
 		
 	</body>
 </html>
