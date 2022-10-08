@@ -42,7 +42,7 @@
 					'</div>' + 
 					
 					'<div class="buildingBlock margin-lr-md">' + 
-						'<img src="assets/images/textures/lava.jpg" class="lavaBuilder" data-blockType="lava" />' + 
+						'<img src="assets/images/textures/lava.gif" class="lavaBuilder" data-blockType="lava" />' + 
 					'</div>' + 
 					
 					'<div class="buildingBlock margin-lr-md">' + 
@@ -115,36 +115,67 @@
 		}
 		
 		if (blockToPlace == null) {
-			$('#errorMsg').text('Select a block below first');
-		} else {
-			console.log(blockToPlace);
-			console.log(sqID);
+			sendErrorMsg('Select a block below first');
+		} else if (sqID != 1275) {
+			//console.log(blockToPlace);
+			//console.log(sqID);
 			
-			//
+			//DELETE BLOCK
+			if (blockToPlace == 'deleteBlock') {
+				
+				//IF DELETING BEAM SOURCE, DELETE THE BEAMS TOO
+				if ($('[data-sq="' + sqID + '"]').hasClass('beamBlock')) {
+					console.log(levelSpotlights);
+					levelSpotlights = [];
+					beamBlocks = [];
+					clearInterval(myInterval);
+				}
+				
+			}
+			
+			//WIPE SQ BLOCK BEFORE PLACING NEW
 			$('[data-sq="' + sqID + '"]').empty().removeAttr('class');
 			
 			//PLACE LAVA BLOCK
 			if (blockToPlace == 'lava') {
-				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/lava.jpg" class="lava faKey" data-lavanum="' + sqID + '">');
+				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/lava.gif" class="lava faKey" data-lavanum="' + sqID + '">').addClass('sq').attr('data-isLava', 'true').css('outline', 'none');
+				levelLava.push(sqID);
 			}
 			
 			//PLACE STOP BLOCK
 			if (blockToPlace == 'stopBlock') {
-				$('[data-sq="' + sqID + '"]').addClass(blockToPlace);
+				$('[data-sq="' + sqID + '"]').addClass(blockToPlace).addClass('sq');
 			}
 			
 			//PLACE BEAM SOURCE
 			if (blockToPlace == 'beamSource') {
-				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/flashlight.png" class="beamSource faKey" data-spotlightnum="' + sqID + '" data-keycolor="' + sqID + '" data-ison="false">').addClass('beamBlock');
+				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/flashlight.png" class="beamSource faKey" data-spotlightnum="' + sqID + '" data-keycolor="' + sqID + '" data-ison="false">').addClass('beamBlock').addClass('sq');
+				levelSpotlights.push(sqID);
+				if (levelSpotlights.length != 0) {
+					//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
+					registerBeams();
+					//PLACE BEAMS
+					triggerBeams();
+				}
 			}
 			
 			//PLACE PUSH BLOCK
 			if (blockToPlace == 'pushBlock') {
-				$('[data-sq="' + sqID + '"]').html('<i class="fas fa-arrows-alt faKey" data-pushblocknum="' + sqID + '" data-inwater="false" aria-hidden="true"></i>');
+				$('[data-sq="' + sqID + '"]').html('<i class="fas fa-arrows-alt faKey" data-pushblocknum="' + sqID + '" data-inwater="false" aria-hidden="true"></i>').addClass('sq');
 			}
 			
 			
+		} else {
+			sendErrorMsg('Cannot delete, remove or replace this block');
 		}
+	}
+	
+	//######################################################
+	//######################################################
+	//######################################################
+	
+	function sendErrorMsg(msg) {
+		$('#errorMsg').text(msg);
 	}
 	
 	//######################################################

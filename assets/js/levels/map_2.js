@@ -8,7 +8,6 @@ if (level == 2) {
 	helpMsg = 'Don\'t be a bonehead. Pick up your bones!';
 	masterDoorNum = 1321;
 	endPortal = 1322;
-	helpBlockLoc = 1275;
 	playerTexture = 'jackolantern_head'; //default | jackolantern_head
 	
 	//SET LEVEL SPECIFIC BLOCKS
@@ -37,7 +36,7 @@ if (level == 2) {
 	levelDoors = ['yellow:1064','yellow:1218','blue:1164','blue:1118','red:964','red:1018','green:864','green:718', 'master:' + masterDoorNum, 'endPortal:' + endPortal];
 	
 	//LAVA LOCATIONS
-	levelLava = ['924','925','926','974','975','976',]
+	levelLava = ['924','925','926','974','975','976']
 	
 	//PUSH BLOCK LOCATIONS
 	levelPushBlocks = ['1125','1075'];

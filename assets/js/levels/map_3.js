@@ -8,7 +8,6 @@ if (level == 3) {
 	helpMsg = 'Did you know that you died in a past life?';
 	masterDoorNum = 1025;
 	endPortal = 925;
-	helpBlockLoc = 1275;
 	playerTexture = 'default'; //default | jackolantern_head
 	
 	//SET LEVEL SPECIFIC BLOCKS

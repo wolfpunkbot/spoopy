@@ -4,11 +4,10 @@ if (level == 1) {
 	console.log('Loading Map ' + level + ' from "map_' + level + '.js"');
 	
 	//SET LEVEL SPECIFIC VARIABLES
-	totalItems = 13; //13
+	totalItems = 1; //13
 	helpMsg = 'Did you know that you died in a past life?';
 	masterDoorNum = 1025;
 	endPortal = 925;
-	helpBlockLoc = 1275;
 	playerTexture = 'default'; //default | jackolantern_head
 	
 	//SET LEVEL SPECIFIC BLOCKS

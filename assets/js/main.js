@@ -19,10 +19,11 @@ var canMove = true;
 var caughtInBeam = false;
 var fellInLava = false;
 var userMobile = false;
-var level, levelKeys, flip, direction, num, totalItems, helpMsg, endPortal, helpBlockLoc, masterDoorNum, playerTexture, globalMarginTop, globalMarginLeft = '';
+var level, levelKeys, flip, direction, num, totalItems, helpMsg, endPortal, masterDoorNum, playerTexture, globalMarginTop, globalMarginLeft = '';
 const startingSquare = 1225;
 const marginLeft = '38px';
 const marginTop = '-1837px';
+var myInterval;
 
 /*
 //ALL SIDE NUMBERS OF THE BOARD
@@ -171,7 +172,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		
 		//CHECK IF GAME WINNER
 		if ( endPortal.toString() == newPos.toString() ) {
-			clearInterval(triggerBeams);
+			clearInterval(myInterval);
 			canMove = false;
 			$('#chickenDinner').removeClass('hidden');
 			$('#gameBoard').addClass('hidden');
@@ -181,7 +182,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 					$('#chickenDinner').addClass('hidden');
 					$('#gameBoard').removeClass('hidden');
 					$('#gameBoard div').empty();
-					$('#myInventory div').empty();
+					$('#myKeys div').empty();
 					$('#myBones div').empty();
 					createBoard();
 					level = Number(localStorage.getItem('CURRENT_LEVEL')) + 1;
@@ -199,7 +200,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		if (canMove == true) {
 			
 			//SHOW HELP MESSAGE IF STANDING ON ? ICON
-			if ( newPos == helpBlockLoc ) {
+			if ( newPos == 1275 ) {
 				$('#message').text(helpMsg).removeClass('hidden');
 			} else {
 				$('#message').text('').addClass('hidden');
@@ -286,6 +287,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//IF PLAYER CAUGHT IN LAVA, SEND PLAYER BACK TO BEGINNNING
 			if (fellInLava == true) {
+				//console.log('fellInLava');
 				playerInLava();
 			}
 			
@@ -293,7 +295,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			//STOP PLAYER FROM WALKING INTO CERTAIN OBJECTS.
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
 			//console.log( $('[data-sq="' + newPos + '"]')[1].classList );
-			if ( $('[data-sq="' + newPos + '"]')[0].classList[1] != 'stopBlock' && $('[data-sq="' + newPos + '"]')[0].classList[1] != 'beamBlock' ) {
+			if ( !$('[data-sq="' + newPos + '"]').hasClass('stopBlock') && !$('[data-sq="' + newPos + '"]').hasClass('beamBlock') ) {
 				$('[data-sq="' + newPos + '"]').effect('shake', {times:2, distance:3}, 250 );
 			}
 		}
@@ -307,7 +309,6 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 //RESET PLAYER AFTER FALLING IN LAVA
 function playerInLava() {
 	canMove = false;
-	//console.log('DROWNED: ' + newPos);
 	$('#player').attr('src','assets/images/characters/death.gif');
 	setTimeout(() => {
 		$('#player').remove();
@@ -349,57 +350,62 @@ function playerInBeam() {
 //THIS FUNCTION HAS AN INTERVAL SET SO IT WILL REPEAT CONTINUOUSLY
 function triggerBeams() {
 	//BEAMS TURNED ON IN SEQUENCE
-	var time = 500;
-	$.each(beamBlocks, function(i, val) {
-		setTimeout(() => {
-			var stop = false;
-			var count = $(this).length;
-			for (x = 0; x < count; x++) {
-				if (stop == false) {
-					if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
-						//console.log('NO STOPBLOCK DETECTED');
-						if (x == 0) {
-							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamStart').attr('hasBeam', 'true');
-						} else if (x == count-1) {
-							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamEnd').attr('hasBeam', 'true');
-						} else {
-							$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').attr('hasBeam', 'true');
-							//DETECT IF STATIONARY PLAYER IS CAUGHT IN ACTIVE BEAM
-							if ($('[data-sq="' + $('#player').attr('data-pos') + '"]').attr('hasBeam') == 'true') {
-								playerInBeam();
-							}
-						}
-					} else {
-						//BLOCK DETECTED. CANNOT CONTINUE BEAM
-						stop = true;
-					}
-				}
-			}
-		}, time);
-		time = time + 250;
-	});
 	
-	//BEAMS TURNED OFF IN SEQUENCE
-	setTimeout(() => {
+	console.log('beamBlocks: ' + beamBlocks);
+	
+	if (beamBlocks.length != 0 && beamBlocks.length != null && beamBlocks != '') {
+		var time = 500;
 		$.each(beamBlocks, function(i, val) {
 			setTimeout(() => {
+				var stop = false;
 				var count = $(this).length;
 				for (x = 0; x < count; x++) {
-					if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
-						//console.log('NO STOPBLOCK DETECTED');
-						if (x == 0) {
-							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamStart').attr('hasBeam', 'false');
-						} else if (x == count-1) {
-							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamEnd').attr('hasBeam', 'false');
+					if (stop == false) {
+						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
+							//console.log('NO STOPBLOCK DETECTED');
+							if (x == 0) {
+								$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamStart').attr('hasBeam', 'true');
+							} else if (x == count-1) {
+								$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamEnd').attr('hasBeam', 'true');
+							} else {
+								$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').attr('hasBeam', 'true');
+								//DETECT IF STATIONARY PLAYER IS CAUGHT IN ACTIVE BEAM
+								if ($('[data-sq="' + $('#player').attr('data-pos') + '"]').attr('hasBeam') == 'true') {
+									playerInBeam();
+								}
+							}
 						} else {
-							$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').attr('hasBeam', 'false');
+							//BLOCK DETECTED. CANNOT CONTINUE BEAM
+							stop = true;
 						}
 					}
 				}
 			}, time);
 			time = time + 250;
 		});
-	}, 500);
+		
+		//BEAMS TURNED OFF IN SEQUENCE
+		setTimeout(() => {
+			$.each(beamBlocks, function(i, val) {
+				setTimeout(() => {
+					var count = $(this).length;
+					for (x = 0; x < count; x++) {
+						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
+							//console.log('NO STOPBLOCK DETECTED');
+							if (x == 0) {
+								$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamStart').attr('hasBeam', 'false');
+							} else if (x == count-1) {
+								$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamEnd').attr('hasBeam', 'false');
+							} else {
+								$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').attr('hasBeam', 'false');
+							}
+						}
+					}
+				}, time);
+				time = time + 250;
+			});
+		}, 500);
+	}
 }
 
 // ##################################################################################
@@ -476,7 +482,7 @@ function createGame() {
 					
 					//PLACE LAVA
 					$.each(levelLava, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/lava.jpg" class="lava faKey" data-lavaNum="' + val + '" />').attr('data-isLava','true').css('outline','none');
+						$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/lava.gif" class="lava faKey" data-lavaNum="' + val + '" />').attr('data-isLava','true').css('outline','none');
 					});
 					
 					//PLACE ICE
@@ -495,13 +501,12 @@ function createGame() {
 					});
 					
 					//IF MAP CONTAINS BEAMS/FLASHLIGHT DETECTORS
-					if (levelSpotlights.length != 0) {
-						
+					if (levelSpotlights.length != 0 && levelSpotlights != '') {
 						//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
 						registerBeams();
-						
 						//PLACE BEAMS
-						setInterval(triggerBeams, 4500);
+						myInterval = setInterval(triggerBeams, 4500);
+						//triggerBeams();
 					}
 					
 					//SET LOCK ICON FOR ALL DOORS
@@ -521,10 +526,14 @@ function createGame() {
 					});
 					
 					//HELP ICON IN CENTER OF BOARD
-					$('[data-sq="' + helpBlockLoc + '"]').append('<i class="fas fa-question-square"></i>');
+					$('[data-sq="1275"]').append('<i class="fas fa-question-square"></i>');
 					
 					//SEND PLAYER TO START POSITION
 					$('[data-sq="' + startingSquare + '"]').prepend('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/' + playerTexture + '.gif" />');
+					
+					//
+					$('.gameContainer').css('margin-left', '38px').css('margin-top', '-1837px');
+					
 				}
 			});
 		}
