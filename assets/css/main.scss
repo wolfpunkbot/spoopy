@@ -986,7 +986,7 @@ i {
 	color: #27AE60;
 	text-shadow: 2px 5px 3px #222;
 }
-
+/*
 .Door_yellow {
 	background-color: #F1C40F;
 	border: 10px outset grey;
@@ -1018,7 +1018,7 @@ i {
 	padding: 0;
 	margin-top: -3px;
 }
-
+*/
 .Door_master {
 	background-color: #222;
 	border: 10px outset #222;
@@ -1191,17 +1191,30 @@ i {
 /* ########################################## */
 
 #saveFile {
+	color: white;
 	position: absolute;
-	top: 50px; 
-	right: 50px; 
-	padding: 20px; 
-	outline: 1px solid #222; 
-	color: #222; 
-	background-color: white;
-	z-index: 10;
-	cursor: pointer;
-	&:hover {
-		background-color: #4cbfd9;
-		color: white;
+    top: 50px;
+    right: 50px;
+    padding: 10px;
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto;
+    text-align: center;
+	input {
+		width: 150px;
+		height: 35px;
+	}
+	button {
+		width: 150px;
+		height: 25px;
+		cursor: pointer;
+		outline: 1px solid #222;
+		color: #222; 
+		background-color: white;
+		&:hover {
+			background-color: #4cbfd9;
+			color: white;
+		}
 	}
 }

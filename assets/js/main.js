@@ -476,10 +476,12 @@ function createGame() {
 			$('[data-sq="' + response.masterDoorNum + '"]').html('<i class="interactable fas fa-ghost Door_master" data-locknum="' + response.masterDoorNum + '" data-islocked="true" data-doorcolor="master" aria-hidden="true"></i>');
 			
 			//PLACE KEYS
-			for (i=0; i<response.levelKeys.length; i++ ) {
-				var keyColor = response.levelKeys[i].split(':')[0];
-				var keyNum = response.levelKeys[i].split(':')[1]
-				$('[data-sq="' + keyNum + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false"></i>');
+			if (response.levelKeys != null) {
+				for (i=0; i<response.levelKeys.length; i++ ) {
+					var keyColor = response.levelKeys[i].split(':')[0];
+					var keyNum = response.levelKeys[i].split(':')[1]
+					$('[data-sq="' + keyNum + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false"></i>');
+				}
 			}
 			
 			//PLACE BONES

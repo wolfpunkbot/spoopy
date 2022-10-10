@@ -1,0 +1,12 @@
+{
+    "masterDoorNum": 0,
+    "levelName": "123test",
+    "totalItems": 0,
+    "levelBoundaryBlocks": [],
+    "levelPushBlocks": [],
+    "levelSpotlights": [],
+    "levelLava": [],
+    "levelDoors": [],
+    "playerTexture": "default",
+    "helpMsg": "New Level"
+}
