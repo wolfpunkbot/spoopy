@@ -1,10 +1,6 @@
-
-
-
-
-	//######################################################
-	//######################################################
-	//######################################################
+//######################################################
+//######################################################
+//######################################################
 	
 	$(document).ready(function() {
 		
@@ -23,6 +19,7 @@
 				'#errorMsg { height: 25px; color: #e64c3c; font-size: 1.5em; }' + 
 				
 			'</style>' + 
+			'<div id="saveFile" onclick="saveFile();">Click to save file</div>' + 
 			'<div class="padding-tb-sm" id="builderContainer">' + 
 				'<p class="centered padding-b-md" id="errorMsg"></p>' + 
 				'<h1 class="centered padding-tb-md">Map Builder</h1>' + 
@@ -61,9 +58,9 @@
 				
 				'<div class="builder flex padding-tb-sm">' + 
 					
-					'<div class="buildingBlock margin-lr-md">' + 
-						'<img src="assets/images/textures/deleteBlock.jpg" class="deleteBlockBuilder" data-blockType="deleteBlock" />' + 
-					'</div>' + 
+					//'<div class="buildingBlock margin-lr-md">' + 
+					//	'<img src="assets/images/textures/deleteBlock.jpg" class="deleteBlockBuilder" data-blockType="deleteBlock" />' + 
+					//'</div>' + 
 					
 					
 					
@@ -103,7 +100,7 @@
 	
 	//PLACE A BLOCK AT TARGET LOCATION
 	function placeBlock(event) {
-		console.log(event);
+		//console.log(event);
 		
 		var blockToPlace = $('.builderSelected').attr('data-blockType');
 		var sqID = '';
@@ -114,15 +111,14 @@
 			sqID = event.target.dataset.sq;
 		}
 		
-		if (blockToPlace == null) {
+		if (blockToPlace == null && event.target.id != 'saveFile') {
 			sendErrorMsg('Select a block below first');
-		} else if (sqID != 1275) {
+		} else if (sqID != 1275 && event.target.id != 'player') {
 			//console.log(blockToPlace);
 			//console.log(sqID);
 			
 			//DELETE BLOCK
 			if (blockToPlace == 'deleteBlock') {
-				
 				//IF DELETING BEAM SOURCE, DELETE THE BEAMS TOO
 				if ($('[data-sq="' + sqID + '"]').hasClass('beamBlock')) {
 					console.log(levelSpotlights);
@@ -130,7 +126,6 @@
 					beamBlocks = [];
 					clearInterval(myInterval);
 				}
-				
 			}
 			
 			//WIPE SQ BLOCK BEFORE PLACING NEW
@@ -139,7 +134,7 @@
 			//PLACE LAVA BLOCK
 			if (blockToPlace == 'lava') {
 				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/lava.gif" class="lava faKey" data-lavanum="' + sqID + '">').addClass('sq').attr('data-isLava', 'true').css('outline', 'none');
-				levelLava.push(sqID);
+				//levelLava.push(sqID);
 			}
 			
 			//PLACE STOP BLOCK
@@ -161,9 +156,8 @@
 			
 			//PLACE PUSH BLOCK
 			if (blockToPlace == 'pushBlock') {
-				$('[data-sq="' + sqID + '"]').html('<i class="fas fa-arrows-alt faKey" data-pushblocknum="' + sqID + '" data-inwater="false" aria-hidden="true"></i>').addClass('sq');
+				$('[data-sq="' + sqID + '"]').html('<i class="fas fa-arrows-alt faKey pushBlock" data-pushblocknum="' + sqID + '" data-inwater="false" aria-hidden="true"></i>').addClass('sq');
 			}
-			
 			
 		} else {
 			sendErrorMsg('Cannot delete, remove or replace this block');
@@ -221,11 +215,54 @@
 	//######################################################
 	//######################################################
 	//######################################################	
+	
+	function saveFile() {
 		
+		//##########################
+		//##########################
 		
+		//VARIABLES
+		var customMapJson = [];
+		var levelBoundaryBlocks = [];
+		var levelPushBlocks = [];
+		var levelSpotlights = [];
+		var levelLava = [];
 		
+		//##########################
+		//##########################
 		
+		//GET ALL BOUNDARY BLOCKS
+		for (i=0; i<$('.stopBlock').length; i++) {
+			levelBoundaryBlocks.push( $('.stopBlock')[i].dataset.sq );
+		}
 		
-	//######################################################
-	//######################################################
-	//######################################################
+		//GET ALL PUSH BLOCKS
+		for (i=0; i<$('.pushBlock').length; i++) {
+			levelPushBlocks.push( $('.pushBlock')[i].dataset.pushblocknum );
+		}
+		
+		//GET ALL SPOT LIGHTS
+		for (i=0; i<$('.beamSource').length; i++) {
+			levelSpotlights.push( $('.beamSource')[i].dataset.spotlightnum );
+		}
+		
+		//GET ALL LAVA
+		for (i=0; i<$('.lava').length; i++) {
+			levelSpotlights.push( $('.lava')[i].dataset.lavanum );
+		}
+		
+		//##########################
+		//##########################
+		
+		//PUSH INTO MASTER ARRAY
+		customMapJson["levelBoundaryBlocks"] = levelBoundaryBlocks;
+		customMapJson["levelPushBlocks"] = levelPushBlocks;
+		customMapJson["levelSpotlights"] = levelSpotlights;
+		customMapJson["levelLava"] = levelLava;
+		
+		//##########################
+		//##########################
+		
+		console.log( customMapJson );
+	};
+	

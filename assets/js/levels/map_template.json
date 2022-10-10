@@ -1,0 +1,21 @@
+{
+  "level": "",
+  "totalItems": "",
+  "helpMsg": "",
+  "masterDoorNum": "",
+  "endPortal": "",
+  "playerTexture": "default",
+  "levelBoundaryBlocks": [],
+  "levelKeys": [],
+  "levelBones": [],
+  "levelDoors": [],
+  "levelLava": [
+	""
+  ],
+  "levelPushBlocks": [
+    ""
+  ],
+  "levelSpotlights": [
+    ""
+  ]
+}

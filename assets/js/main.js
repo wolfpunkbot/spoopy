@@ -39,7 +39,7 @@ var board_BOTTOM = ['211', '212', '213', '214', '215', '216', '217', '218', '219
 
 $(document).ready(function() {
 	createBoard(); //CREATE BOARD HTML ELEMENTS
-	createGame(); //CREATE GAME/LEVEL AND ADD PLAYER - ACCEPTS "LEVEL" AS ARGUMENT
+	createGame(); //CREATE GAME/LEVEL AND ADD PLAYER
 });
 
 // ##################################################################################
@@ -239,7 +239,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 					//ALLOW MOVING A SINGLE BLOCK
 					//console.log('ALLOW BLOCK MOVEMENT');
 					$('[data-sq="' + newPos + '"] i').remove();
-					$('[data-sq="' + num + '"]').append('<i class="fas fa-arrows-alt faKey" data-pushBlockNum="' + num + '" data-inWater="false"></i>');
+					$('[data-sq="' + num + '"]').append('<i class="fas fa-arrows-alt faKey pushBlock" data-pushBlockNum="' + num + '" data-inWater="false"></i>');
 					//REMOVE LAVA WHEN BLOCK PUSHED INTO IT
 					if ( $('[data-sq="' + num + '"]')[0].children[0].classList[0] == 'lava' ) {
 						$('[data-sq="' + num + '"]').attr('isLava', 'false').empty();
@@ -253,7 +253,6 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 				$('[data-sq="' + newPos + '"]').prepend('<img id="player" data-pos="' + newPos + '" src="assets/images/characters/' + playerTexture + '.gif" class="walkLeft" />');
 				//KEEP CAMERA CONTROLS CENTERED
 				$('.gameContainer').css('margin-left', Number($('.gameContainer').css('margin-left').split('px')[0]) + 75);
-				
 			}
 			
 			//IF RIGHT ARROW PRESSED
@@ -350,9 +349,6 @@ function playerInBeam() {
 //THIS FUNCTION HAS AN INTERVAL SET SO IT WILL REPEAT CONTINUOUSLY
 function triggerBeams() {
 	//BEAMS TURNED ON IN SEQUENCE
-	
-	console.log('beamBlocks: ' + beamBlocks);
-	
 	if (beamBlocks.length != 0 && beamBlocks.length != null && beamBlocks != '') {
 		var time = 500;
 		$.each(beamBlocks, function(i, val) {
@@ -361,7 +357,7 @@ function triggerBeams() {
 				var count = $(this).length;
 				for (x = 0; x < count; x++) {
 					if (stop == false) {
-						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
+						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
 							//console.log('NO STOPBLOCK DETECTED');
 							if (x == 0) {
 								$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamStart').attr('hasBeam', 'true');
@@ -383,14 +379,13 @@ function triggerBeams() {
 			}, time);
 			time = time + 250;
 		});
-		
 		//BEAMS TURNED OFF IN SEQUENCE
 		setTimeout(() => {
 			$.each(beamBlocks, function(i, val) {
 				setTimeout(() => {
 					var count = $(this).length;
 					for (x = 0; x < count; x++) {
-						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') ) {
+						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
 							//console.log('NO STOPBLOCK DETECTED');
 							if (x == 0) {
 								$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamStart').attr('hasBeam', 'false');
@@ -451,91 +446,99 @@ function createGame() {
 	
 	//CHECK IF MAP EXISTS
 	$.ajax({
-		url: 'assets/js/levels/map_' + level + '.js',
-		type: 'HEAD',
-		error: function() {
+		url: 'assets/js/levels/map_' + level + '.json',
+		error: function(response) {
 			//NO MAP FOR THIS LEVEL CREATED YET
 			console.log('NO MAP FOR THIS LEVEL CREATED YET');
 		},
-		success: function() {
+		success: function(response) {
 			//LOAD LEVEL SPECIFIC MAPS
-			$.getScript('assets/js/levels/map_' + level + '.js').done(function(script, textStatus) {
-				if (textStatus == 'success') {
-					
-					//RESET CAMERA POSITION
-					$('#gameBoard').css('margin-top', '').css('margin-left', '');
-					
-					//PLACE DOORS
-					$.each(levelBoundaryBlocks, function(i, val) {
-						$('[data-sq="' + val + '"]').addClass('stopBlock');
-					});
-					
-					//PLACE KEYS
-					$.each(levelKeys, function(i, val) {
-						$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + val.split(':')[0] + '" data-keyColor="' + val.split(':')[0] + '" data-keyNum="' + val.split(':')[1] + '" data-isCollected="false"></i>');
-					});
-					
-					//PLACE BONES
-					$.each(levelBones, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<i class="fas fa-bone faKey" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
-					});
-					
-					//PLACE LAVA
-					$.each(levelLava, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/lava.gif" class="lava faKey" data-lavaNum="' + val + '" />').attr('data-isLava','true').css('outline','none');
-					});
-					
-					//PLACE ICE
-					$.each(levelIce, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/ice.jpg" class="ice faKey" data-iceNum="' + val + '" />');
-					});
-					
-					//PLACE PUSH BLOCKS
-					$.each(levelPushBlocks, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<i class="fas fa-arrows-alt faKey" data-pushBlockNum="' + val + '" data-inWater="false"></i>');
-					});
-					
-					//PLACE FLASHLIGHTS
-					$.each(levelSpotlights, function(i, val) {
-						$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/flashlight.png" class="beamSource faKey" data-spotlightNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isOn="false" />').addClass('beamBlock');
-					});
-					
-					//IF MAP CONTAINS BEAMS/FLASHLIGHT DETECTORS
-					if (levelSpotlights.length != 0 && levelSpotlights != '') {
-						//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
-						registerBeams();
-						//PLACE BEAMS
-						myInterval = setInterval(triggerBeams, 4500);
-						//triggerBeams();
+			console.log(response);
+			//RESET CAMERA POSITION
+			$('#gameBoard').css('margin-top', '').css('margin-left', '');
+			
+			//SET GLOBAL VARIABLES
+			endPortal = response.endPortal;
+			masterDoorNum = response.masterDoorNum;
+			playerTexture = response.playerTexture;
+			totalItems = response.totalItems;
+			helpMsg = response.helpMsg;
+			
+			//PLACE BOUNDARY BLOCKS
+			$.each(response.levelBoundaryBlocks, function(i, val) {
+				$('[data-sq="' + val + '"]').addClass('stopBlock');
+			});
+			
+			//PLACE END PORTAL
+			$('[data-sq="' + response.endPortal + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + response.endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
+			
+			//PLACE GHOST DOOR
+			$('[data-sq="' + response.masterDoorNum + '"]').html('<i class="interactable fas fa-ghost Door_master" data-locknum="' + response.masterDoorNum + '" data-islocked="true" data-doorcolor="master" aria-hidden="true"></i>');
+			
+			//PLACE KEYS
+			for (i=0; i<response.levelKeys.length; i++ ) {
+				var keyColor = response.levelKeys[i].split(':')[0];
+				var keyNum = response.levelKeys[i].split(':')[1]
+				$('[data-sq="' + keyNum + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false"></i>');
+			}
+			
+			//PLACE BONES
+			$.each(response.levelBones, function(i, val) {
+				$('[data-sq="' + val + '"]').html('<i class="fas fa-bone faKey" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
+			});
+			
+			//PLACE LAVA
+			$.each(response.levelLava, function(i, val) {
+				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/lava.gif" class="lava faKey" data-lavaNum="' + val + '" />').attr('data-isLava','true').css('outline','none');
+			});
+			
+			//PLACE PUSH BLOCKS
+			$.each(response.levelPushBlocks, function(i, val) {
+				$('[data-sq="' + val + '"]').html('<i class="fas fa-arrows-alt faKey pushBlock" data-pushBlockNum="' + val + '" data-inWater="false"></i>');
+			});
+			
+			//PLACE FLASHLIGHTS
+			$.each(response.levelSpotlights, function(i, val) {
+				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/flashlight.png" class="beamSource faKey" data-spotlightNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isOn="false" />').addClass('beamBlock');
+			});
+			
+			//IF MAP CONTAINS BEAMS/FLASHLIGHT DETECTORS
+			if (response.levelSpotlights.length != 0 && response.levelSpotlights != '') {
+				//PUSH LIGHTBLOCK SOURCES TO LOCAL ARRAY
+				for (i=0; i<response.levelSpotlights.length; i++ ) {
+					levelSpotlights.push(response.levelSpotlights[i]);
+				}
+				//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
+				registerBeams();
+				//PLACE BEAMS
+				myInterval = setInterval(triggerBeams, 4500);
+				//triggerBeams();
+			}
+			
+			//SET LOCK ICON FOR ALL DOORS
+			var icon = 'fad fa-lock';
+			$.each(response.levelDoors, function(i, val) {
+				if (val.split(':')[0] == 'endPortal') {
+					icon = 'fas fa-jack-o-lantern';
+					$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '" />');
+				} else {
+					//SET ICON FOR GHOST DOOR
+					if (val.split(':')[0] == 'master') {
+						icon = 'fas fa-ghost';
 					}
-					
-					//SET LOCK ICON FOR ALL DOORS
-					var icon = 'fad fa-lock';
-					$.each(levelDoors, function(i, val) {
-						if (val.split(':')[0] == 'endPortal') {
-							icon = 'fas fa-jack-o-lantern';
-							$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '" />');
-						} else {
-							//SET ICON FOR GHOST DOOR
-							if (val.split(':')[0] == 'master') {
-								icon = 'fas fa-ghost';
-							}
-							//SET CODE FOR ALL LOCKED DOORS
-							$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="interactable ' + icon + ' Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '"></i>');
-						}
-					});
-					
-					//HELP ICON IN CENTER OF BOARD
-					$('[data-sq="1275"]').append('<i class="fas fa-question-square"></i>');
-					
-					//SEND PLAYER TO START POSITION
-					$('[data-sq="' + startingSquare + '"]').prepend('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/' + playerTexture + '.gif" />');
-					
-					//
-					$('.gameContainer').css('margin-left', '38px').css('margin-top', '-1837px');
-					
+					//SET CODE FOR ALL LOCKED DOORS
+					$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="interactable ' + icon + ' Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '"></i>');
 				}
 			});
+			
+			//HELP ICON IN CENTER OF BOARD
+			$('[data-sq="1275"]').append('<i class="fas fa-question-square"></i>');
+			
+			//SEND PLAYER TO START POSITION
+			$('[data-sq="' + startingSquare + '"]').prepend('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/' + response.playerTexture + '.gif" />');
+			
+			//
+			$('.gameContainer').css('margin-left', '38px').css('margin-top', '-1837px');
 		}
 	});
 }
