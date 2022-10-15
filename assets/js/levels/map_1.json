@@ -1,8 +1,10 @@
 {
   "levelName": "1",
-  "totalItems": "13",
+  "totalKeys": "8",
+  "totalBones":"5", 
+  "totalDoors":"8", 
   "helpMsg": "Did you know that you died in a past life?",
-  "masterDoorNum": "1025",
+  "wolfDoorNum": "1025",
   "endPortal": "925",
   "playerTexture": "default",
   "levelBoundaryBlocks": [

@@ -200,8 +200,26 @@
 				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/flashlight.png" class="beamSource faKey" data-spotlightnum="' + sqID + '" data-keycolor="' + sqID + '" data-ison="false">').addClass('beamBlock').addClass('sq');
 				levelSpotlights.push(sqID);
 				if (levelSpotlights.length != 0) {
-					//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
-					registerBeams();
+					//REGISTER BEAMS - HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
+					if (levelSpotlights.length != 0) {
+						var count = levelSpotlights.length;
+						beamBlocks = [];
+						for (i = 0; i < count; i++) {
+							beamBlocks.push([
+								Number(levelSpotlights[i]) - 50,
+								Number(levelSpotlights[i]) - 100,
+								Number(levelSpotlights[i]) - 150,
+								Number(levelSpotlights[i]) - 200,
+								Number(levelSpotlights[i]) - 250,
+								Number(levelSpotlights[i]) - 300,
+								Number(levelSpotlights[i]) - 350,
+								Number(levelSpotlights[i]) - 400,
+								Number(levelSpotlights[i]) - 450,
+								Number(levelSpotlights[i]) - 500,
+								Number(levelSpotlights[i]) - 550
+							]);
+						}
+					}
 					//PLACE BEAMS
 					triggerBeams();
 				}
@@ -217,9 +235,9 @@
 				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + sqID + '" data-islocked="true" data-doorcolor="endPortal">');
 			}
 			
-			//PLACE GHOST DOOR
+			//PLACE WOLF DOOR
 			if (blockToPlace == 'masterDoor') {
-				$('[data-sq="' + sqID + '"]').html('<i class="interactable fas fa-ghost Door_master" data-locknum="' + sqID + '" data-islocked="true" data-doorcolor="master" aria-hidden="true"></i>');
+				$('[data-sq="' + sqID + '"]').html('<img src="assets/images/textures/doors/wolf.gif" class="interactable Door_wolf" data-locknum="' + sqID + '" data-islocked="true" data-doorcolor="wolf" />');
 			}
 			
 			//PLACE NORMAL DOORS
@@ -310,7 +328,7 @@
 			var levelSpotlights = [];
 			var levelLava = [];
 			var totalItems = 0;
-			var masterDoorNum = 0;
+			var wolfDoorNum = 0;
 			var levelDoors = [];
 			var fileName = $('#saveFile input').val();
 			
@@ -354,7 +372,7 @@
 			//##########################
 			
 			//PUSH INTO MASTER ARRAY
-			customMapJson["masterDoorNum"] = masterDoorNum;
+			customMapJson["wolfDoorNum"] = wolfDoorNum;
 			customMapJson["levelName"] = fileName;
 			customMapJson["totalItems"] = totalItems;
 			customMapJson["levelBoundaryBlocks"] = levelBoundaryBlocks;

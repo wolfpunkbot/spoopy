@@ -1,21 +1,29 @@
 {
-  "level": "",
+  "levelName": "",
   "totalItems": "",
-  "helpMsg": "",
+  "helpMsg": "Your message",
   "masterDoorNum": "",
   "endPortal": "",
   "playerTexture": "default",
-  "levelBoundaryBlocks": [],
-  "levelKeys": [],
-  "levelBones": [],
-  "levelDoors": [],
+  "levelBoundaryBlocks": [
+    
+  ],
+  "levelKeys": [
+    
+  ],
+  "levelBones": [
+	
+  ],
+  "levelDoors": [
+	
+  ],
   "levelLava": [
-	""
+	
   ],
   "levelPushBlocks": [
-    ""
+    
   ],
   "levelSpotlights": [
-    ""
+    
   ]
 }

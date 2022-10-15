@@ -881,7 +881,7 @@ body {
 
 .gameLine div {
 	background-color: #69746b;
-	outline: 2px solid #606A62;
+	outline: 1px solid #606A62;
 	min-width: 60px;
 	min-height: 60px;
 	height: 60px;
@@ -1072,23 +1072,27 @@ i {
 .beamMiddle {
 	background-image: linear-gradient(to right, #69746B,#767C67,#8F8D5F,#C1AF4F,#8F8D5F,#767C67,#69746B);
 	outline: none!important;
+	overflow: hidden;
 }
 
 .beamStart {
 	border-bottom-left-radius: 630px 1000px;
 	border-bottom-right-radius: 600px 1000px;
+	overflow: hidden;
 }
 
 .beamEnd {
 	border-top-left-radius: 630px 1000px;
 	border-top-right-radius: 600px 1000px;
 	background-image: linear-gradient((to top, #69746B,#767C67,#8F8D5F,#C1AF4F,#8F8D5F,#767C67, #69746B),(to right, rgba(244,208,63,0), rgba(244,208,63,1)));
+	overflow: hidden;
 }
 
 .beamSource {
 	transform: none!important;
 	margin-top: -10px;
 	padding: 5px;
+	overflow: hidden;
 }
 
 .beamBlock {
@@ -1097,6 +1101,7 @@ i {
 	border-left: 10px outset grey;
 	border-right: 10px outset grey;
 	border-top: 5px outset grey;
+	overflow: hidden;
 }
 
 .lava, .ice {

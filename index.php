@@ -20,6 +20,8 @@ TO DO:
 <html lang="en">
 
 	<head>
+		<title>Spoopy</title>
+		<link rel="shortcut icon" href="assets/images/characters/default.gif">
 		<link rel="stylesheet" type="text/css" href="assets/css/main.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

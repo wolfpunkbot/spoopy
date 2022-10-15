@@ -12,26 +12,21 @@ var devDebug = false;
 //INITIATE MASTER VARIABLES
 var totalMaps = 2;
 var amount = 0;
-var levelDoors, beamBlocks, levelBones, levelLava, levelIce, levelPushBlocks, levelSpotlights = [];
+var levelDoors, beamBlocks, levelBones, levelLava, levelIce, levelPushBlocks, 
+	levelSpotlights = [];
 var boardSize = 50;
 var totalSquares = 2500;
 var canMove = true;
 var caughtInBeam = false;
 var fellInLava = false;
 var userMobile = false;
-var level, levelKeys, flip, direction, num, totalItems, helpMsg, endPortal, masterDoorNum, playerTexture, globalMarginTop, globalMarginLeft = '';
+var level, levelKeys, flip, direction, num, totalDoors, totalBones, 
+	totalKeys, helpMsg, endPortal, wolfDoorNum, playerTexture, globalMarginTop, 
+	globalMarginLeft, collectedKeyCount, collectedBoneCount, doorsLeft = '';
 const startingSquare = 1225;
 const marginLeft = '38px';
 const marginTop = '-1837px';
 var myInterval;
-
-/*
-//ALL SIDE NUMBERS OF THE BOARD
-var board_TOP = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15'];
-var board_LEFT = ['1', '16', '31', '46', '61', '76', '91', '106', '121', '136', '151', '166', '181', '196', '211'];
-var board_RIGHT = ['15', '30', '45', '60', '75', '90', '105', '120', '135', '150', '165', '180', '195', '210', '225'];
-var board_BOTTOM = ['211', '212', '213', '214', '215', '216', '217', '218', '219', '220', '221', '222', '223', '224', '225'];
-*/
 
 // ##################################################################################
 // ##################################################################################
@@ -121,16 +116,8 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		var canMove = true;
 		var flip, direction, num = '';
 		
-		// ##################################################################################
-		// ##################################################################################
-		// ##################################################################################
-		
 		//STOP THE PLAYER FROM GETTING PAST BLOCKS IN ANY DIRECTION
-		if ( $('[data-sq="' + newPos + '"]').hasClass('stopBlock') ) {
-			canMove = false;
-		}
-		//STOP THE PLAYER FROM GETTING PAST BLOCKS IN ANY DIRECTION
-		if (levelSpotlights.includes(newPos.toString())) {
+		if ( $('[data-sq="' + newPos + '"]').hasClass('stopBlock') || levelSpotlights.includes(newPos.toString()) ) {
 			canMove = false;
 		}
 		//CHECK IF PLAYER WALKS INTO BEAM
@@ -141,32 +128,66 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		if ( $('[data-sq="' + newPos + '"] img').length != 0 && $('[data-sq="' + newPos + '"]').attr('data-isLava') == 'true' ) {
 			fellInLava = true;
 		}
-		
 		//DETECT LOCKED DOORS AND USE KEYS TO UNLOCK IF AVAILABLE, THIS USES UP A KEY
 		if ($('[data-sq="' + newPos + '"]')[0].children.length > 0 && $('[data-sq="' + newPos + '"]')[0].children[0].classList[0] == 'interactable') {
-			if ($('.collectedKeys').length > 0) {
-				var itemCount = $('.collectedKeys').length;
-				//13 ITEMS TOTAL TO COLLECT
-				if (itemCount == totalItems) { // AND OPENED DOORS = 8 ^
-					//console.log('Create Master Key OR simply enable master door to be unlocked');
-					//REMOVE MASTER DOOR IF ALL KEYS GATHER
-					$('.Door_master').remove();
+			console.log('trying to open a door..');
+			
+			//GET PLAYER INVENTORY NUMBERS
+			var collectedKeyCount = Number($('#myKeys div i').length);
+			var collectedBoneCount = Number($('#myBones div i').length);
+			var doorsLeft = Number($('.isADoor').length);
+			var tempCount = 0;
+			
+			//FEED THE WOLF/REMOVE THE WOLF DOOR
+			if (newPos == Number(wolfDoorNum)) {
+				console.log('attempting to feed puppy');
+				if (collectedKeyCount == 0 && doorsLeft == 0 && collectedBoneCount == Number(totalBones)) {
+					console.log('removing wolf door..');
+					$('.Door_wolf').remove();
+					canMove = true;
 				} else {
-					//console.log('Not all Keys collected yet');
-					for (i=0; i < itemCount; i++) {
+					canMove = false;
+				}
+			} else {
+				canMove = false;
+			}
+			
+			//CHECK KEYS
+			if (collectedKeyCount > 0) {
+				console.log('has keys..');
+				
+				//VARIABLES
+				var theDoorColorWeAreInteractingWith = $('[data-lockNum="' + newPos + '"]').attr('data-doorColor');
+				var theKeyColorWeAreLookingFor = theDoorColorWeAreInteractingWith;
+				var myKeyInventoryKey = $('#myKeys div i');
+				var myKeyInventoryKeyCount = myKeyInventoryKey.length;
+				
+				//CHECK INVENTORY
+				for (i=0; i<myKeyInventoryKeyCount; i++) {
+					if ( Number(totalBones) != collectedBoneCount && doorsLeft != 0 ) {
+						console.log('checking collected keys for one matching this door..');
+						
 						//CHECK FOR MATCHING COLORED KEY THAT HASN'T BEEN USED UP
-						if ($('.collectedKeys')[i].attributes[1].value == $('[data-lockNum="' + newPos + '"]').attr('data-doorColor') && $('.collectedKeys')[i].attributes[5].value != 'true') {
+						var aKeyFromMyInventory = myKeyInventoryKey[i];
+						if ( $(aKeyFromMyInventory).attr('data-keyColor') == theKeyColorWeAreLookingFor && tempCount == 0 ) {
+							
+							//REMOVE COLORED KEY FROM INVENTORY (SINGLE USE KEYS)
+							$(aKeyFromMyInventory).remove();
+							
 							//REMOVE UNLOCKED DOORS WHEN KEYS ARE USED
-							$('[data-sq="' + newPos + '"] i').remove();
-							//USE UP KEY WHEN DOOR UNLOCKED (SINGLE USE KEYS)
-							$('.collectedKeys')[i].attributes[5].value = 'true';
+							$('[data-sq="' + newPos + '"]').empty();
+							
+							//ALLOW PLAYER MOVEMENT
+							canMove = true;
+							tempCount = 1;
+						} else if (tempCount == 1) {
+							canMove = true;
 						} else {
+							console.log('player does not have the correct key..');
 							canMove = false;
 						}
 					}
 				}
-			} else {
-				canMove = false;
 			}
 		}
 		
@@ -193,12 +214,8 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			}, 3500);
 		}
 		
-		// ##################################################################################
-		// ##################################################################################
-		// ##################################################################################
-		
 		if (canMove == true) {
-			
+			console.log('player moving..');
 			//SHOW HELP MESSAGE IF STANDING ON ? ICON
 			if ( newPos == 1275 ) {
 				$('#message').text(helpMsg).removeClass('hidden');
@@ -208,11 +225,13 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//GATHER KEYS INTO INVENTORY
 			if ( $('[data-keyNum="' + newPos + '"]').attr('data-keyNum') != null && $('[data-keyNum="' + newPos + '"]').attr('data-isCollected') == 'false' ) {
+				console.log('picking up key..');
 				$('#myKeys div').append($('[data-keyNum="' + newPos + '"]').removeClass('faKey').addClass('collectedKeys').attr('data-isCollected','true').attr('beenUsed','false'));
 			}
 			
 			//GATHER BONES INTO INVENTORY
 			if ( $('[data-boneNum="' + newPos + '"]').attr('data-boneNum') != null && $('[data-boneNum="' + newPos + '"]').attr('data-isCollected') == 'false' ) {
+				console.log('picking up bone..');
 				$('#myBones div').append($('[data-boneNum="' + newPos + '"]').removeClass('faKey').addClass('collectedKeys').attr('data-isCollected','true').attr('beenUsed','false'));
 			}
 			
@@ -224,6 +243,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//PUSH BLOCKS
 			if ( $('[data-pushBlockNum="' + newPos + '"]').attr('data-pushBlockNum') != null && $('[data-pushBlockNum="' + newPos + '"]').attr('data-inWater') == 'false' ) {
+				console.log('trying to push block..');
 				var num = 0;
 				if (arrow == 'UP') { num = newPos-50; }
 				if (arrow == 'DOWN') { num = newPos+50; }
@@ -281,12 +301,13 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//IF PLAYER CAUGHT IN THE BEAM, SEND PLAYER BACK TO BEGINNNING
 			if (caughtInBeam == true) {
+				console.log('caught in beam..');
 				playerInBeam();
 			}
 			
 			//IF PLAYER CAUGHT IN LAVA, SEND PLAYER BACK TO BEGINNNING
 			if (fellInLava == true) {
-				//console.log('fellInLava');
+				console.log('fell in lava..');
 				playerInLava();
 			}
 			
@@ -295,6 +316,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
 			//console.log( $('[data-sq="' + newPos + '"]')[1].classList );
 			if ( !$('[data-sq="' + newPos + '"]').hasClass('stopBlock') && !$('[data-sq="' + newPos + '"]').hasClass('beamBlock') ) {
+				console.log('access denied..');
 				$('[data-sq="' + newPos + '"]').effect('shake', {times:2, distance:3}, 250 );
 			}
 		}
@@ -407,33 +429,6 @@ function triggerBeams() {
 // ##################################################################################
 // ##################################################################################
 
-//PLACE SPOTLIGHT NODES AND THEIR BEAM BLOCKS
-function registerBeams() {
-	if (levelSpotlights.length != 0) {
-		var count = levelSpotlights.length;
-		beamBlocks = [];
-		for (i = 0; i < count; i++) {
-			beamBlocks.push([
-				Number(levelSpotlights[i]) - 50,
-				Number(levelSpotlights[i]) - 100,
-				Number(levelSpotlights[i]) - 150,
-				Number(levelSpotlights[i]) - 200,
-				Number(levelSpotlights[i]) - 250,
-				Number(levelSpotlights[i]) - 300,
-				Number(levelSpotlights[i]) - 350,
-				Number(levelSpotlights[i]) - 400,
-				Number(levelSpotlights[i]) - 450,
-				Number(levelSpotlights[i]) - 500,
-				Number(levelSpotlights[i]) - 550
-			]);
-		}
-	}
-}
-
-// ##################################################################################
-// ##################################################################################
-// ##################################################################################
-
 function createGame() {
 	
 	//CHECK FOR GAME SAVES, IF NONE, START FROM LEVEL 1
@@ -459,9 +454,11 @@ function createGame() {
 			
 			//SET GLOBAL VARIABLES
 			endPortal = response.endPortal;
-			masterDoorNum = response.masterDoorNum;
+			wolfDoorNum = response.wolfDoorNum;
 			playerTexture = response.playerTexture;
-			totalItems = response.totalItems;
+			totalKeys = response.totalKeys;
+			totalBones = response.totalBones;
+			totalDoors = response.totalDoors;
 			helpMsg = response.helpMsg;
 			
 			//PLACE BOUNDARY BLOCKS
@@ -472,8 +469,8 @@ function createGame() {
 			//PLACE END PORTAL
 			$('[data-sq="' + response.endPortal + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + response.endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
 			
-			//PLACE GHOST DOOR
-			$('[data-sq="' + response.masterDoorNum + '"]').html('<i class="interactable fas fa-ghost Door_master" data-locknum="' + response.masterDoorNum + '" data-islocked="true" data-doorcolor="master" aria-hidden="true"></i>');
+			//PLACE WOLF DOOR
+			$('[data-sq="' + response.wolfDoorNum + '"]').html('<img src="assets/images/textures/doors/wolf.gif" class="interactable Door_wolf" data-locknum="' + response.wolfDoorNum + '" data-islocked="true" data-doorcolor="wolf" />');
 			
 			//PLACE KEYS
 			if (response.levelKeys != null) {
@@ -510,28 +507,41 @@ function createGame() {
 				for (i=0; i<response.levelSpotlights.length; i++ ) {
 					levelSpotlights.push(response.levelSpotlights[i]);
 				}
-				//REGISTER HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
-				registerBeams();
+				//REGISTER BEAMS - HOW FAR BEAMS CAN GO - THIS NEEDS CLEANED UP
+				if (levelSpotlights.length != 0) {
+					var count = levelSpotlights.length;
+					beamBlocks = [];
+					for (i = 0; i < count; i++) {
+						beamBlocks.push([
+							Number(levelSpotlights[i]) - 50,
+							Number(levelSpotlights[i]) - 100,
+							Number(levelSpotlights[i]) - 150,
+							Number(levelSpotlights[i]) - 200,
+							Number(levelSpotlights[i]) - 250,
+							Number(levelSpotlights[i]) - 300,
+							Number(levelSpotlights[i]) - 350,
+							Number(levelSpotlights[i]) - 400,
+							Number(levelSpotlights[i]) - 450,
+							Number(levelSpotlights[i]) - 500,
+							Number(levelSpotlights[i]) - 550
+						]);
+					}
+				}
 				//PLACE BEAMS
 				myInterval = setInterval(triggerBeams, 4500);
-				//triggerBeams();
 			}
 			
 			//SET LOCK ICON FOR ALL DOORS
-			var icon = 'fad fa-lock';
+			
 			$.each(response.levelDoors, function(i, val) {
 				if (val.split(':')[0] == 'endPortal') {
-					icon = 'fas fa-jack-o-lantern';
 					$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '" />');
 				} else {
-					//SET ICON FOR GHOST DOOR
-					if (val.split(':')[0] == 'master') {
-						icon = 'fas fa-ghost';
-					}
 					//SET CODE FOR ALL LOCKED DOORS
-					$('[data-sq="' + val.split(':')[1] + '"]').html('<i class="interactable ' + icon + ' Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '"></i>');
+					$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/doors/' + val.split(':')[0] + 'Door.png" class="interactable isADoor Door_' + val.split(':')[0] + '" data-locknum="' + val.split(':')[1] + '" data-islocked="true" data-doorcolor="' + val.split(':')[0] + '" />');
 				}
 			});
+			
 			
 			//HELP ICON IN CENTER OF BOARD
 			$('[data-sq="1275"]').append('<i class="fas fa-question-square"></i>');
@@ -540,7 +550,7 @@ function createGame() {
 			$('[data-sq="' + startingSquare + '"]').prepend('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/' + response.playerTexture + '.gif" />');
 			
 			//
-			$('.gameContainer').css('margin-left', '38px').css('margin-top', '-1837px');
+			$('.gameContainer').css('margin-left', marginLeft).css('margin-top', marginTop);
 		}
 	});
 }
