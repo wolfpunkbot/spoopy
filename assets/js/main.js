@@ -4,6 +4,7 @@
 
 var devDebug = false;
 //https://www.youtube.com/watch?v=9RIi9FvDhQA&ab_channel=Thegamerwalkthroughs
+var siteURL = 'http://192.168.1.8/projects/games/SPOOPY/';
 
 // ##################################################################################
 // ##################################################################################
@@ -49,7 +50,7 @@ if (devDebug == true) {
 
 function reset() {
 	localStorage.setItem('CURRENT_LEVEL','1');
-	window.location.href = '<?php echo $siteURL; ?>';
+	window.location.href = siteURL;
 }
 
 //CREATE THE GAME BOARD
@@ -130,7 +131,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		}
 		//DETECT LOCKED DOORS AND USE KEYS TO UNLOCK IF AVAILABLE, THIS USES UP A KEY
 		if ($('[data-sq="' + newPos + '"]')[0].children.length > 0 && $('[data-sq="' + newPos + '"]')[0].children[0].classList[0] == 'interactable') {
-			console.log('trying to open a door..');
+			//console.log('trying to open a door..');
 			
 			//GET PLAYER INVENTORY NUMBERS
 			var collectedKeyCount = Number($('#myKeys div i').length);
@@ -140,13 +141,14 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//FEED THE WOLF/REMOVE THE WOLF DOOR
 			if (newPos == Number(wolfDoorNum)) {
-				console.log('attempting to feed puppy');
+				//console.log('attempting to feed puppy');
 				if (collectedKeyCount == 0 && doorsLeft == 0 && collectedBoneCount == Number(totalBones)) {
-					console.log('removing wolf door..');
+					//console.log('removing wolf door..');
 					$('.Door_wolf').remove();
 					canMove = true;
 				} else {
 					canMove = false;
+					toggleDogMsg();
 				}
 			} else {
 				canMove = false;
@@ -154,7 +156,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//CHECK KEYS
 			if (collectedKeyCount > 0) {
-				console.log('has keys..');
+				//console.log('has keys..');
 				
 				//VARIABLES
 				var theDoorColorWeAreInteractingWith = $('[data-lockNum="' + newPos + '"]').attr('data-doorColor');
@@ -165,7 +167,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 				//CHECK INVENTORY
 				for (i=0; i<myKeyInventoryKeyCount; i++) {
 					if ( Number(totalBones) != collectedBoneCount && doorsLeft != 0 ) {
-						console.log('checking collected keys for one matching this door..');
+						//console.log('checking collected keys for one matching this door..');
 						
 						//CHECK FOR MATCHING COLORED KEY THAT HASN'T BEEN USED UP
 						var aKeyFromMyInventory = myKeyInventoryKey[i];
@@ -183,7 +185,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 						} else if (tempCount == 1) {
 							canMove = true;
 						} else {
-							console.log('player does not have the correct key..');
+							//console.log('player does not have the correct key..');
 							canMove = false;
 						}
 					}
@@ -215,23 +217,23 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		}
 		
 		if (canMove == true) {
-			console.log('player moving..');
+			//console.log('player moving..');
 			//SHOW HELP MESSAGE IF STANDING ON ? ICON
 			if ( newPos == 1275 ) {
-				$('#message').text(helpMsg).removeClass('hidden');
+				$('#message').html(helpMsg).removeClass('hidden');
 			} else {
 				$('#message').text('').addClass('hidden');
 			}
 			
 			//GATHER KEYS INTO INVENTORY
 			if ( $('[data-keyNum="' + newPos + '"]').attr('data-keyNum') != null && $('[data-keyNum="' + newPos + '"]').attr('data-isCollected') == 'false' ) {
-				console.log('picking up key..');
+				//console.log('picking up key..');
 				$('#myKeys div').append($('[data-keyNum="' + newPos + '"]').removeClass('faKey').addClass('collectedKeys').attr('data-isCollected','true').attr('beenUsed','false'));
 			}
 			
 			//GATHER BONES INTO INVENTORY
 			if ( $('[data-boneNum="' + newPos + '"]').attr('data-boneNum') != null && $('[data-boneNum="' + newPos + '"]').attr('data-isCollected') == 'false' ) {
-				console.log('picking up bone..');
+				//console.log('picking up bone..');
 				$('#myBones div').append($('[data-boneNum="' + newPos + '"]').removeClass('faKey').addClass('collectedKeys').attr('data-isCollected','true').attr('beenUsed','false'));
 			}
 			
@@ -243,7 +245,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//PUSH BLOCKS
 			if ( $('[data-pushBlockNum="' + newPos + '"]').attr('data-pushBlockNum') != null && $('[data-pushBlockNum="' + newPos + '"]').attr('data-inWater') == 'false' ) {
-				console.log('trying to push block..');
+				//console.log('trying to push block..');
 				var num = 0;
 				if (arrow == 'UP') { num = newPos-50; }
 				if (arrow == 'DOWN') { num = newPos+50; }
@@ -301,13 +303,13 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			
 			//IF PLAYER CAUGHT IN THE BEAM, SEND PLAYER BACK TO BEGINNNING
 			if (caughtInBeam == true) {
-				console.log('caught in beam..');
+				//console.log('caught in beam..');
 				playerInBeam();
 			}
 			
 			//IF PLAYER CAUGHT IN LAVA, SEND PLAYER BACK TO BEGINNNING
 			if (fellInLava == true) {
-				console.log('fell in lava..');
+				//console.log('fell in lava..');
 				playerInLava();
 			}
 			
@@ -316,7 +318,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
 			//console.log( $('[data-sq="' + newPos + '"]')[1].classList );
 			if ( !$('[data-sq="' + newPos + '"]').hasClass('stopBlock') && !$('[data-sq="' + newPos + '"]').hasClass('beamBlock') ) {
-				console.log('access denied..');
+				//console.log('access denied..');
 				$('[data-sq="' + newPos + '"]').effect('shake', {times:2, distance:3}, 250 );
 			}
 		}
@@ -326,6 +328,18 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 // ##################################################################################
 // ##################################################################################
 // ##################################################################################
+
+//
+function toggleDogMsg() {
+	//console.log('dogMsg');
+	
+	$('#dogMsg').removeClass('hidden');
+	$('#dogMsg').html('Feed Me,<br>Whore.');
+	setTimeout(() => {
+		$('#dogMsg').addClass('hidden');
+		$('#dogMsg').html('');
+	}, 3000);
+}
 
 //RESET PLAYER AFTER FALLING IN LAVA
 function playerInLava() {
@@ -448,7 +462,7 @@ function createGame() {
 		},
 		success: function(response) {
 			//LOAD LEVEL SPECIFIC MAPS
-			console.log(response);
+			//console.log(response);
 			//RESET CAMERA POSITION
 			$('#gameBoard').css('margin-top', '').css('margin-left', '');
 			
@@ -461,16 +475,45 @@ function createGame() {
 			totalDoors = response.totalDoors;
 			helpMsg = response.helpMsg;
 			
-			//PLACE BOUNDARY BLOCKS
+			//PLACE BOUNDARY BLOCKS/STOP BLOCKS
 			$.each(response.levelBoundaryBlocks, function(i, val) {
 				$('[data-sq="' + val + '"]').addClass('stopBlock');
 			});
 			
+			//STRIP BORDERS SO EACH STOPBLOCK LOKS CONTINOUS
+			$.each(response.levelBoundaryBlocks, function(i, val) {
+				var numVal = Number(val);
+				//
+				if ($('[data-sq="' + (numVal+1) + '"]')[0].classList[1] == 'stopBlock' ) {
+					$('[data-sq="' + numVal + '"]').css('border-right','none');
+				} else {
+					$('[data-sq="' + numVal + '"]').css('border-right','10px solid #222');
+				}
+				//
+				if ($('[data-sq="' + (numVal-1) + '"]')[0].classList[1] == 'stopBlock' ) {
+					$('[data-sq="' + numVal + '"]').css('border-left','none');
+				} else {
+					$('[data-sq="' + numVal + '"]').css('border-left','10px solid #222');
+				}
+				//
+				if ($('[data-sq="' + (numVal+50) + '"]')[0].classList[1] == 'stopBlock' ) {
+					$('[data-sq="' + numVal + '"]').css('border-bottom','none');
+				} else {
+					$('[data-sq="' + numVal + '"]').css('border-bottom','10px solid #222');
+				}
+				//
+				if ($('[data-sq="' + (numVal-50) + '"]')[0].classList[1] == 'stopBlock' ) {
+					$('[data-sq="' + numVal + '"]').css('border-top','none');
+				} else {
+					$('[data-sq="' + numVal + '"]').css('border-top','10px solid #222');
+				}
+			});
+			
 			//PLACE END PORTAL
-			$('[data-sq="' + response.endPortal + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + response.endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
+			$('[data-sq="' + endPortal + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
 			
 			//PLACE WOLF DOOR
-			$('[data-sq="' + response.wolfDoorNum + '"]').html('<img src="assets/images/textures/doors/wolf.gif" class="interactable Door_wolf" data-locknum="' + response.wolfDoorNum + '" data-islocked="true" data-doorcolor="wolf" />');
+			$('[data-sq="' + wolfDoorNum + '"]').html('<img src="assets/images/textures/doors/wolf.gif" class="interactable Door_wolf" data-locknum="' + wolfDoorNum + '" data-islocked="true" data-doorcolor="wolf" /><span id="dogMsg" class="hidden"></span>');
 			
 			//PLACE KEYS
 			if (response.levelKeys != null) {
@@ -532,7 +575,6 @@ function createGame() {
 			}
 			
 			//SET LOCK ICON FOR ALL DOORS
-			
 			$.each(response.levelDoors, function(i, val) {
 				if (val.split(':')[0] == 'endPortal') {
 					$('[data-sq="' + val.split(':')[1] + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_' + val.split(':')[0] + '" data-lockNum="' + val.split(':')[1] + '" data-isLocked="true" data-doorColor="' + val.split(':')[0] + '" />');
@@ -544,7 +586,7 @@ function createGame() {
 			
 			
 			//HELP ICON IN CENTER OF BOARD
-			$('[data-sq="1275"]').append('<i class="fas fa-question-square"></i>');
+			$('[data-sq="1275"]').append('<img class="grave" src="assets/images/textures/grave.png" />');
 			
 			//SEND PLAYER TO START POSITION
 			$('[data-sq="' + startingSquare + '"]').prepend('<img id="player" data-pos="' + startingSquare + '" src="assets/images/characters/' + response.playerTexture + '.gif" />');

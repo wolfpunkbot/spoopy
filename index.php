@@ -12,8 +12,17 @@ TO DO:
 -->
 
 <?php
+	
+	ini_set('display_errors', 1);
+	ini_set('display_startup_errors', 1);
+	error_reporting(E_ALL);
+	
 	$siteURL = 'http://192.168.1.8/projects/games/SPOOPY/';
-	$builder = $_GET['builder'];
+	/*
+	if ($_GET['builder'] != null) {
+		$builder = $_GET['builder'];
+	}
+	*/
 ?>
 
 <!DOCTYPE html>
@@ -30,6 +39,13 @@ TO DO:
 	</head>
 	
 	<body>
+		
+		<div class="overlay"></div>
+		
+		<div id="foglayer_01" class="fog">
+			<div class="image01"></div>
+			<div class="image02"></div>
+		</div>
 		
 		<section class="gameContainer">
 			<div id="gameBoard" class="centered"></div>
@@ -62,10 +78,12 @@ TO DO:
 		<script type="text/javascript" src="assets/js/main.js"></script>
 		
 		<?php
+		/*
 			if ($builder == true) {
 				echo '<script>console.log("loading builder.js");</script>';
 				echo '<script type="text/javascript" src="assets/js/builder.js"></script>';
 			}
+			*/
 		?>
 		
 	</body>

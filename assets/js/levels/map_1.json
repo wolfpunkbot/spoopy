@@ -3,7 +3,7 @@
   "totalKeys": "8",
   "totalBones":"5", 
   "totalDoors":"8", 
-  "helpMsg": "Did you know that you died in a past life?",
+  "helpMsg": "<small>The inscription reads..</small><br><span>It's so dark down here..</span>",
   "wolfDoorNum": "1025",
   "endPortal": "925",
   "playerTexture": "default",

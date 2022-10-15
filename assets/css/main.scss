@@ -51,12 +51,6 @@ html {
 	font-weight: 400;
 }
 
-body {
-	padding: 0px;
-	margin: 0px;
-	line-height:1.2;
-}
-
 header {
 	color: $white;
 	background-color: $primary;
@@ -844,44 +838,42 @@ body {
 	overflow: hidden;
 	height: 100%;
 	width: 100%;
+	background-image: url(../images/dirt.png);
+	position: relative;
+	margin: 0;
+	.overlay {
+		position: absolute;
+		max-width: 100vw;
+		max-height: 100vh;
+		width: 100%;
+		height: 100%;
+		padding: 0;
+		margin: 0;
+		background-color: #555;
+		opacity: 0.5;
+	}
 }
 
 .gameContainer {
-	//max-width: 1135px;
-	//margin: 0px auto;
-	//position: fixed;
-	//top: 50%;
-	//left: 50%;
-	//transform: translate(-50%, -50%);
-	//margin-left: 38px;
-    //margin-top: 38px;
-	
-	
-	//width: 100%;
-	//height: 100%;
-	//margin-left: 38px;
-    //margin-top: -1025px;
-	
 	margin-left: 38px;
     margin-top: -1837px;
     position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(50%, 50%);
+	filter: sepia(50%);
 }
 
 #gameBoard {
 	transform: scale(1.25);
-	
 	width: 100%;
 	height: 100%;
-	
 	position: absolute;
 }
 
 .gameLine div {
-	background-color: #69746b;
-	outline: 1px solid #606A62;
+	//background-color: #69746b;
+	//outline: 1px solid #775815;
 	min-width: 60px;
 	min-height: 60px;
 	height: 60px;
@@ -910,13 +902,6 @@ i {
 	z-index: -1;
 	font-size: 2.5em;
 	line-height: 60px;
-}
-
-.fa-question-square {
-	top: 30%;
-	left: 50%;
-	transform: translate(-50%, -25%);
-	color: #222;
 }
 
 .fa-jack-o-lantern {
@@ -1171,6 +1156,8 @@ i {
 	background-color: rgba(34,34,34,0.9);
 	color: white;
 	font-size: 2em;
+	font-family: 'Creepster', cursive;
+	opacity: 0.7;
 }
 
 #chickenDinner {
@@ -1222,4 +1209,142 @@ i {
 			color: white;
 		}
 	}
+}
+
+/* ########################################## */
+/* ########################################## */
+/* ########################################## */
+
+.Door_wolf {
+	filter: brightness(125%);
+}
+
+#dogMsg {
+	position: absolute !important;
+    top: -85%;
+    left: -33%;
+    border: 1px solid #222;
+    background-color: white;
+    border-radius: 20%;
+    font-size: 1em;
+    z-index: 10;
+    width: 100px;
+    height: 50px;
+    line-height: 25px;
+}
+
+/* ########################################## */
+/* ########################################## */
+/* ########################################## */
+/* ---------- Fog ---------- */
+.fogwrapper {
+  height: 100%;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  -webkit-filter: blur(1px) grayscale(0.2) saturate(1.2) sepia(0.2);
+  filter: blur(1px) grayscale(0.2) saturate(1.2) sepia(0.2);
+}
+#foglayer_01, #foglayer_02, #foglayer_03 {
+  height: 100%;
+  position: absolute;
+  width: 200%;
+}
+#foglayer_01 .image01, #foglayer_01 .image02,
+#foglayer_02 .image01, #foglayer_02 .image02,
+#foglayer_03 .image01, #foglayer_03 .image02 {
+  float: left;
+  height: 100%;
+  width: 50%;
+}
+#foglayer_01 {
+  -webkit-animation: foglayer_01_opacity 10s linear infinite, foglayer_moveme 15s linear infinite;
+  -moz-animation: foglayer_01_opacity 10s linear infinite, foglayer_moveme 15s linear infinite;
+  animation: foglayer_01_opacity 10s linear infinite, foglayer_moveme 15s linear infinite;
+}
+#foglayer_02, #foglayer_03 {
+  -webkit-animation: foglayer_02_opacity 21s linear infinite, foglayer_moveme 13s linear infinite;
+  -moz-animation: foglayer_02_opacity 21s linear infinite, foglayer_moveme 13s linear infinite;
+  animation: foglayer_02_opacity 21s linear infinite, foglayer_moveme 13s linear infinite;
+}
+
+/* ---------- Moving Fog ---------- */
+/*
+https://codepen.io/faltastic/pen/evKbEV
+*/ 
+#foglayer_01 .image01, #foglayer_01 .image02 {
+  background: url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog1.png") center center/cover no-repeat transparent;
+}
+#foglayer_02 .image01, #foglayer_02 .image02,
+#foglayer_03 .image01, #foglayer_03 .image02{
+  background: url("https://raw.githubusercontent.com/danielstuart14/CSS_FOG_ANIMATION/master/fog2.png") center center/cover no-repeat transparent;
+}
+
+/* ---------- Keyframe Layer 1 ---------- */
+@-webkit-keyframes foglayer_01_opacity {
+  0% { opacity: .1; }
+  22% { opacity: .5; }
+  40% { opacity: .28; }
+  58% { opacity: .4; }
+  80% { opacity: .16; }
+  100% { opacity: .1; }
+}
+@-moz-keyframes foglayer_01_opacity {
+  0% { opacity: .1; }
+  22% { opacity: .5; }
+  40% { opacity: .28; }
+  58% { opacity: .4; }
+  80% { opacity: .16; }
+  100% { opacity: .1; }
+}
+@-o-keyframes foglayer_01_opacity {
+  0% { opacity: .1; }
+  22% { opacity: .5; }
+  40% { opacity: .28; }
+  58% { opacity: .4; }
+  80% { opacity: .16; }
+  100% { opacity: .1; }
+}
+@keyframes foglayer_01_opacity {
+  0% { opacity: .1; }
+  22% { opacity: .5; }
+  40% { opacity: .28; }
+  58% { opacity: .4; }
+  80% { opacity: .16; }
+  100% { opacity: .1; }
+}
+/* ---------- Keyframe moveMe ---------- */
+@-webkit-keyframes foglayer_moveme {
+  0% { left: 0; }
+  100% { left: -100%; }
+}
+@-moz-keyframes foglayer_moveme {
+  0% { left: 0; }
+  100% { left: -100%; }
+}
+@-o-keyframes foglayer_moveme {
+  0% { left: 0; }
+  100% { left: -100%; }
+}
+@keyframes foglayer_moveme {
+  0% { left: 0; }
+  100% { left: -100%; }
+}
+
+@media only screen
+  and (min-width: 280px)
+  and (max-width: 767px) {
+    #foglayer_01 .image01, #foglayer_01 .image02 {
+      width: 100%;
+    }
+  }
+  
+
+.grave {
+	top: 30%;
+    left: 48%;
+    transform: translate(-50%, -30%);
+    position: absolute;
+    z-index: -1;
+    width: 60px;
 }
