@@ -838,7 +838,7 @@ body {
 	overflow: hidden;
 	height: 100%;
 	width: 100%;
-	background-image: url(../images/dirt.png);
+	background-image: url(../images/textures/dirt.png);
 	position: relative;
 	margin: 0;
 	.overlay {
@@ -881,6 +881,7 @@ body {
 	line-height: 60px;
 	z-index: 1;
 	position: relative;
+	filter: drop-shadow(2px 4px 6px black);
 }
 
 #player {
@@ -947,30 +948,15 @@ i {
 }
 
 .faKey {
-	top: 30%;
-	left: 50%;
-	transform: translate(-50%, -25%);
+	//top: 30%;
+	//left: 50%;
+	//transform: translate(-50%, -25%);
 }
 
-.Key_yellow {
-	color: #F1C40F;
-	text-shadow: 2px 5px 3px #222;
+.Key_yellow, .Key_red, .Key_blue, .Key_green {
+	height: 40px;
 }
 
-.Key_red {
-	color: #E74C3C;
-	text-shadow: 2px 5px 3px #222;
-}
-
-.Key_blue {
-	color: #3498DB;
-	text-shadow: 2px 5px 3px #222;
-}
-
-.Key_green {
-	color: #27AE60;
-	text-shadow: 2px 5px 3px #222;
-}
 /*
 .Door_yellow {
 	background-color: #F1C40F;
@@ -1024,12 +1010,12 @@ i {
 }
 
 .endPortal {
-	background-color: #222;
-	border: 10px outset #222;
+	//background-color: #222;
+	//border: 10px outset #222;
 	width: 100%;
 	padding: 0;
 	margin-top: -3px;
-	top: 30%;
+	top: 30%;	
 	left: 50%;
 	transform: translate(-50%, -25%);
 	font-size: 1em;
@@ -1050,8 +1036,9 @@ i {
 }
 
 .stopBlock {
-	background-color: #636363!important;
-	border: 10px outset grey;
+	//background-color: #636363!important;
+	//border: 10px outset grey;
+	//height: 60px;
 }
 
 .beamMiddle {
@@ -1089,9 +1076,10 @@ i {
 	overflow: hidden;
 }
 
-.lava, .ice {
+.lava, .ice, .pushBlock {
 	position: absolute;
-	margin-top: -3px;
+    top: 0;
+    left: 0;
 	z-index: -1;
 }
 
@@ -1216,7 +1204,8 @@ i {
 /* ########################################## */
 
 .Door_wolf {
-	filter: brightness(125%);
+	//filter: brightness(125%);
+	vertical-align: middle;
 }
 
 #dogMsg {
@@ -1227,10 +1216,10 @@ i {
     background-color: white;
     border-radius: 20%;
     font-size: 1em;
-    z-index: 10;
+    z-index: 15;
     width: 100px;
-    height: 50px;
-    line-height: 25px;
+    height: auto;
+    line-height: 15px;
 }
 
 /* ########################################## */
@@ -1339,8 +1328,7 @@ https://codepen.io/faltastic/pen/evKbEV
     }
   }
   
-
-.grave {
+.grave, .randImgAsset {
 	top: 30%;
     left: 48%;
     transform: translate(-50%, -30%);

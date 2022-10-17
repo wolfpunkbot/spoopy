@@ -22,7 +22,7 @@ var caughtInBeam = false;
 var fellInLava = false;
 var userMobile = false;
 var level, levelKeys, flip, direction, num, totalDoors, totalBones, 
-	totalKeys, helpMsg, endPortal, wolfDoorNum, playerTexture, globalMarginTop, 
+	totalKeys, helpMsg, wolfMsg, endPortal, wolfDoorNum, playerTexture, globalMarginTop, 
 	globalMarginLeft, collectedKeyCount, collectedBoneCount, doorsLeft = '';
 const startingSquare = 1225;
 const marginLeft = '38px';
@@ -116,10 +116,11 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		//console.log(arrow + ': ' + oldPos + ' -> ' + newPos);
 		var canMove = true;
 		var flip, direction, num = '';
-		
 		//STOP THE PLAYER FROM GETTING PAST BLOCKS IN ANY DIRECTION
-		if ( $('[data-sq="' + newPos + '"]').hasClass('stopBlock') || levelSpotlights.includes(newPos.toString()) ) {
-			canMove = false;
+		if ( $('[data-sq="' + newPos + '"] img').length > 0 ) {
+			if ( $('[data-sq="' + newPos + '"] img').hasClass('stopBlock') || levelSpotlights.includes(newPos.toString()) ) {
+				canMove = false;
+			}
 		}
 		//CHECK IF PLAYER WALKS INTO BEAM
 		if ( $('[data-sq="' + newPos + '"]').attr('hasBeam') == 'true' ) {
@@ -134,8 +135,8 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			//console.log('trying to open a door..');
 			
 			//GET PLAYER INVENTORY NUMBERS
-			var collectedKeyCount = Number($('#myKeys div i').length);
-			var collectedBoneCount = Number($('#myBones div i').length);
+			var collectedKeyCount = Number($('#myKeys div img').length);
+			var collectedBoneCount = Number($('#myBones div img').length);
 			var doorsLeft = Number($('.isADoor').length);
 			var tempCount = 0;
 			
@@ -148,7 +149,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 					canMove = true;
 				} else {
 					canMove = false;
-					toggleDogMsg();
+					toggleDogMsg(wolfMsg);
 				}
 			} else {
 				canMove = false;
@@ -161,7 +162,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 				//VARIABLES
 				var theDoorColorWeAreInteractingWith = $('[data-lockNum="' + newPos + '"]').attr('data-doorColor');
 				var theKeyColorWeAreLookingFor = theDoorColorWeAreInteractingWith;
-				var myKeyInventoryKey = $('#myKeys div i');
+				var myKeyInventoryKey = $('#myKeys div img');
 				var myKeyInventoryKeyCount = myKeyInventoryKey.length;
 				
 				//CHECK INVENTORY
@@ -317,7 +318,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 			//STOP PLAYER FROM WALKING INTO CERTAIN OBJECTS.
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
 			//console.log( $('[data-sq="' + newPos + '"]')[1].classList );
-			if ( !$('[data-sq="' + newPos + '"]').hasClass('stopBlock') && !$('[data-sq="' + newPos + '"]').hasClass('beamBlock') ) {
+			if ( !$('[data-sq="' + newPos + '"] img').hasClass('stopBlock') && !$('[data-sq="' + newPos + '"]').hasClass('beamBlock') ) {
 				//console.log('access denied..');
 				$('[data-sq="' + newPos + '"]').effect('shake', {times:2, distance:3}, 250 );
 			}
@@ -330,11 +331,11 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 // ##################################################################################
 
 //
-function toggleDogMsg() {
+function toggleDogMsg(msg) {
 	//console.log('dogMsg');
 	
 	$('#dogMsg').removeClass('hidden');
-	$('#dogMsg').html('Feed Me,<br>Whore.');
+	$('#dogMsg').html(msg);
 	setTimeout(() => {
 		$('#dogMsg').addClass('hidden');
 		$('#dogMsg').html('');
@@ -393,7 +394,7 @@ function triggerBeams() {
 				var count = $(this).length;
 				for (x = 0; x < count; x++) {
 					if (stop == false) {
-						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
+						if ( !$('[data-sq="' + val[x] + '"] img').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
 							//console.log('NO STOPBLOCK DETECTED');
 							if (x == 0) {
 								$('[data-sq="' + val[x] + '"]').addClass('beamMiddle').addClass('beamStart').attr('hasBeam', 'true');
@@ -421,7 +422,7 @@ function triggerBeams() {
 				setTimeout(() => {
 					var count = $(this).length;
 					for (x = 0; x < count; x++) {
-						if ( !$('[data-sq="' + val[x] + '"]').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
+						if ( !$('[data-sq="' + val[x] + '"] img').hasClass('stopBlock') && !$('[data-sq="' + val[x] + '"]').hasClass('pushBlock') ) {
 							//console.log('NO STOPBLOCK DETECTED');
 							if (x == 0) {
 								$('[data-sq="' + val[x] + '"]').removeClass('beamMiddle').removeClass('beamStart').attr('hasBeam', 'false');
@@ -474,43 +475,63 @@ function createGame() {
 			totalBones = response.totalBones;
 			totalDoors = response.totalDoors;
 			helpMsg = response.helpMsg;
+			wolfMsg = response.wolfMsg;
 			
 			//PLACE BOUNDARY BLOCKS/STOP BLOCKS
 			$.each(response.levelBoundaryBlocks, function(i, val) {
-				$('[data-sq="' + val + '"]').addClass('stopBlock');
+				//$('[data-sq="' + val + '"]').addClass('stopBlock');
+				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/stopBlock.jpg" class="stopBlock" style="width: 100%;" />').css('z-index', 'auto');
 			});
 			
-			//STRIP BORDERS SO EACH STOPBLOCK LOKS CONTINOUS
+			
+			
+			//STRIP BORDERS SO EACH STOPBLOCK LOOKS CONTINOUS
 			$.each(response.levelBoundaryBlocks, function(i, val) {
 				var numVal = Number(val);
+				
 				//
 				if ($('[data-sq="' + (numVal+1) + '"]')[0].classList[1] == 'stopBlock' ) {
 					$('[data-sq="' + numVal + '"]').css('border-right','none');
 				} else {
-					$('[data-sq="' + numVal + '"]').css('border-right','10px solid #222');
+					$('[data-sq="' + numVal + '"]').css('border-right','1px solid #222');
 				}
 				//
 				if ($('[data-sq="' + (numVal-1) + '"]')[0].classList[1] == 'stopBlock' ) {
 					$('[data-sq="' + numVal + '"]').css('border-left','none');
 				} else {
-					$('[data-sq="' + numVal + '"]').css('border-left','10px solid #222');
+					$('[data-sq="' + numVal + '"]').css('border-left','1px solid #222');
 				}
 				//
 				if ($('[data-sq="' + (numVal+50) + '"]')[0].classList[1] == 'stopBlock' ) {
 					$('[data-sq="' + numVal + '"]').css('border-bottom','none');
 				} else {
-					$('[data-sq="' + numVal + '"]').css('border-bottom','10px solid #222');
+					$('[data-sq="' + numVal + '"]').css('border-bottom','1px solid #222');
 				}
 				//
 				if ($('[data-sq="' + (numVal-50) + '"]')[0].classList[1] == 'stopBlock' ) {
 					$('[data-sq="' + numVal + '"]').css('border-top','none');
 				} else {
-					$('[data-sq="' + numVal + '"]').css('border-top','10px solid #222');
+					$('[data-sq="' + numVal + '"]').css('border-top','1px solid #222');
 				}
+				//
+				
+				
+				//PLACE RANDOM TREE STUMPS
+				if ( $('[data-sq="' + numVal + '"]').length <= 1 ) {
+					var randomNum = Math.floor(Math.random() * 10);
+					if ( $('[data-sq="' + ((numVal+randomNum)-5) + '"]')[0].classList[1] != 'stopBlock' && (numVal+randomNum) != (startingSquare+50) && (numVal+randomNum) != 975 ) {
+						if ( randomNum == 4 || randomNum == 7 && (numVal+randomNum) != startingSquare ) {
+							$('[data-sq="' + ((numVal+randomNum)-5) + '"]').append('<img src="assets/images/textures/treeStump.png" class="randImgAsset" data-img_Asset_Sq="' + ((numVal+randomNum)-5) + '" />');
+						} else if ( randomNum == 2 && $('[data-sq="' + ((numVal+randomNum)+1) + '"]')[0].classList[1] != 'stopBlock' ) {
+							$('[data-sq="' + ((numVal+randomNum)+1) + '"]').append('<img src="assets/images/textures/dirtPile.png" class="randImgAsset" data-img_Asset_Sq="' + ((numVal+randomNum)+1) + '" />');
+						}
+					}
+				}
+				
 			});
 			
 			//PLACE END PORTAL
-			$('[data-sq="' + endPortal + '"]').html('<img src="assets/images/textures/endPortal.png" class="interactable endPortal Door_endPortal" data-locknum="' + endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
+			$('[data-sq="' + endPortal + '"]').html('<img src="assets/images/textures/hole.png" class="interactable endPortal Door_endPortal" data-locknum="' + endPortal + '" data-islocked="true" data-doorcolor="endPortal">');
 			
 			//PLACE WOLF DOOR
 			$('[data-sq="' + wolfDoorNum + '"]').html('<img src="assets/images/textures/doors/wolf.gif" class="interactable Door_wolf" data-locknum="' + wolfDoorNum + '" data-islocked="true" data-doorcolor="wolf" /><span id="dogMsg" class="hidden"></span>');
@@ -520,13 +541,15 @@ function createGame() {
 				for (i=0; i<response.levelKeys.length; i++ ) {
 					var keyColor = response.levelKeys[i].split(':')[0];
 					var keyNum = response.levelKeys[i].split(':')[1]
-					$('[data-sq="' + keyNum + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false"></i>');
+					//$('[data-sq="' + keyNum + '"]').html('<i class="fad fa-key-skeleton faKey Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false"></i>');
+					$('[data-sq="' + keyNum + '"]').html('<img src="assets/images/textures/keys/' + keyColor + 'Key.gif" class="Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false" />');
 				}
 			}
 			
 			//PLACE BONES
 			$.each(response.levelBones, function(i, val) {
-				$('[data-sq="' + val + '"]').html('<i class="fas fa-bone faKey" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
+				//$('[data-sq="' + val + '"]').html('<i class="fas fa-bone faKey" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
+				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/bone.png" class="faKey" style="transform:none; width: 40px; vertical-align: middle; height: auto;" data-boneNum="' + val + '" data-keyColor="' + val.split(':')[0] + '" data-isCollected="false"></i>');
 			});
 			
 			//PLACE LAVA

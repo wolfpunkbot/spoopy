@@ -4,6 +4,7 @@
   "totalBones":"5", 
   "totalDoors":"8", 
   "helpMsg": "<small>The inscription reads..</small><br><span>It's so dark down here..</span>",
+  "wolfMsg": "<small>If you want down here.. bring me the bones.</small>",
   "wolfDoorNum": "1025",
   "endPortal": "925",
   "playerTexture": "default",
