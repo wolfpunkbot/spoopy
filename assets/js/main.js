@@ -130,6 +130,7 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 		if ( $('[data-sq="' + newPos + '"] img').length != 0 && $('[data-sq="' + newPos + '"]').attr('data-isLava') == 'true' ) {
 			fellInLava = true;
 		}
+		
 		//DETECT LOCKED DOORS AND USE KEYS TO UNLOCK IF AVAILABLE, THIS USES UP A KEY
 		if ($('[data-sq="' + newPos + '"]')[0].children.length > 0 && $('[data-sq="' + newPos + '"]')[0].children[0].classList[0] == 'interactable') {
 			//console.log('trying to open a door..');
@@ -314,6 +315,35 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 				playerInLava();
 			}
 			
+			if ( $('[data-testBlockNum="' + newPos + '"]').attr('data-direction') == 'UP' ) {
+				//ANIMATE PLAYER TO NEW SQUARE
+				$('#player').css('position','absolute').animate({
+					marginTop: '-60px'
+				}, 1000, function() {
+					$('#player').remove().css('position', 'relative');
+					$('[data-sq="' + (newPos-50) + '"]').prepend('<img id="player" data-pos="' + (newPos-50) + '" src="assets/images/characters/' + playerTexture + '.gif" class="" />');
+					//KEEP CAMERA CONTROLS CENTERED
+					$('.gameContainer').css('margin-top', Number($('.gameContainer').css('margin-top').split('px')[0]) + 75);
+				});
+			}
+			
+			if ( $('[data-testBlockNum="' + newPos + '"]').attr('data-direction') == 'DOWN' ) {
+				//ANIMATE PLAYER TO NEW SQUARE
+				$('#player').css('position','absolute').animate({
+					marginTop: '60px'
+				}, 1000, function() {
+					$('#player').remove().css('position', 'relative');
+					$('[data-sq="' + (newPos+50) + '"]').prepend('<img id="player" data-pos="' + (newPos+50) + '" src="assets/images/characters/' + playerTexture + '.gif" class="" />');
+					//KEEP CAMERA CONTROLS CENTERED
+					$('.gameContainer').css('margin-top', Number($('.gameContainer').css('margin-top').split('px')[0]) - 75);
+				});
+			}
+			
+			
+			
+			
+			
+			
 		} else {
 			//STOP PLAYER FROM WALKING INTO CERTAIN OBJECTS.
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
@@ -483,8 +513,6 @@ function createGame() {
 				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/stopBlock.jpg" class="stopBlock" style="width: 100%;" />').css('z-index', 'auto');
 			});
 			
-			
-			
 			//STRIP BORDERS SO EACH STOPBLOCK LOOKS CONTINOUS
 			$.each(response.levelBoundaryBlocks, function(i, val) {
 				var numVal = Number(val);
@@ -515,7 +543,6 @@ function createGame() {
 				}
 				//
 				
-				
 				//PLACE RANDOM TREE STUMPS
 				if ( $('[data-sq="' + numVal + '"]').length <= 1 ) {
 					var randomNum = Math.floor(Math.random() * 10);
@@ -545,6 +572,24 @@ function createGame() {
 					$('[data-sq="' + keyNum + '"]').html('<img src="assets/images/textures/keys/' + keyColor + 'Key.gif" class="Key_' + keyColor + '" data-keyColor="' + keyColor + '" data-keyNum="' + keyNum + '" data-isCollected="false" />');
 				}
 			}
+			
+			
+			
+			
+			
+			
+			
+			//PLACE testBlock
+			$.each(response.testBlock, function(i, val) {
+				$('[data-sq="' + val + '"]').html('<img src="assets/images/textures/testBlock.jpg" class="faKey testBlockClass" data-direction="UP" style="transform:none; width: 40px; vertical-align: middle; height: auto;" data-testBlockNum="' + val + '" data-keyColorTestBlock="' + val.split(':')[0] + '"></i>');
+			});
+			
+			
+			
+			
+			
+			
+			
 			
 			//PLACE BONES
 			$.each(response.levelBones, function(i, val) {
