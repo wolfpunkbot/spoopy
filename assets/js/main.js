@@ -4,7 +4,7 @@
 
 var devDebug = false;
 //https://www.youtube.com/watch?v=9RIi9FvDhQA&ab_channel=Thegamerwalkthroughs
-var siteURL = 'http://192.168.1.8/projects/games/SPOOPY/';
+var siteURL = 'http://localhost/spoopy/';
 
 // ##################################################################################
 // ##################################################################################
