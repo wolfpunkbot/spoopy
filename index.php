@@ -16,7 +16,7 @@ TO DO:
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 	
-	$siteURL = 'http://localhost/SPOOPY/';
+	$siteURL = 'http://localhost/spoopy/';
 	/*
 	if ($_GET['builder'] != null) {
 		$builder = $_GET['builder'];
