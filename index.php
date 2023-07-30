@@ -16,7 +16,7 @@ TO DO:
 	ini_set('display_startup_errors', 1);
 	error_reporting(E_ALL);
 	
-	$siteURL = 'http://192.168.1.8/projects/games/SPOOPY/';
+	$siteURL = 'http://localhost/SPOOPY/';
 	/*
 	if ($_GET['builder'] != null) {
 		$builder = $_GET['builder'];
