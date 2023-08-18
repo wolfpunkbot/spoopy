@@ -8,6 +8,8 @@
 	
 	if (!empty($_GET['builder'])) {
 		$builder = $_GET['builder'];
+	} else {
+		$builder = "";
 	}
 	
 ?>
