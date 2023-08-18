@@ -1,27 +1,7 @@
-<!--
-
-KNOWN ISSUES:
--- triggerBeam() interval not clearing
-
-TO DO:
--- ADD SPLASH SCREEN
--- ADD CUSTOM SKELE GEAR IF YOU PICK UP CERTAIN STUFF?
--- TOGGLE SOUND ICON ON/OFF
-
--->
-
 <?php
 	
-	ini_set('display_errors', 1);
-	ini_set('display_startup_errors', 1);
-	error_reporting(E_ALL);
+	include("assets/config.php");
 	
-	$siteURL = 'http://localhost/spoopy/';
-	/*
-	if ($_GET['builder'] != null) {
-		$builder = $_GET['builder'];
-	}
-	*/
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +14,19 @@ TO DO:
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 		<link href="https://fonts.googleapis.com/css2?family=Creepster&display=swap" rel="stylesheet" />
-		<!--<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=5.0">-->
+		
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+		<script type="text/javascript"src="assets/fa/da7246007f.js"></script>
+		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+		<script type="text/javascript" src="assets/js/main.js"></script>
+		
+		<?php
+			if ($builder == true) {
+				echo '<script>console.log("loading builder.js");</script>';
+				echo '<script type="text/javascript" src="assets/js/builder.js"></script>';
+			}
+		?>
+		
 	</head>
 	
 	<body>
@@ -70,20 +62,6 @@ TO DO:
 		
 		<div id="chickenDinner" class="hidden">YOU WON!</div>
 		<div id="message" class="centered padding-tb-md hidden"></div>
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-		<script type="text/javascript"src="assets/fa/da7246007f.js"></script>
-		<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
-		<script type="text/javascript" src="assets/js/main.js"></script>
-		
-		<?php
-		/*
-			if ($builder == true) {
-				echo '<script>console.log("loading builder.js");</script>';
-				echo '<script type="text/javascript" src="assets/js/builder.js"></script>';
-			}
-			*/
-		?>
 		
 	</body>
 </html>

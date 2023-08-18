@@ -339,11 +339,6 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 				});
 			}
 			
-			
-			
-			
-			
-			
 		} else {
 			//STOP PLAYER FROM WALKING INTO CERTAIN OBJECTS.
 			//ANIMATE THE BLOCKING OBJECT TO SHAKE
@@ -363,7 +358,6 @@ function updatePlayerPos(oldPos, newPos, arrow) {
 //
 function toggleDogMsg(msg) {
 	//console.log('dogMsg');
-	
 	$('#dogMsg').removeClass('hidden');
 	$('#dogMsg').html(msg);
 	setTimeout(() => {
